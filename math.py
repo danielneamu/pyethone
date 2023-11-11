@@ -50,7 +50,7 @@ def main():
         print(f"Număr de răspunsuri corecte: {numar_corect}")
         print(f"Scorul tău: {scor:.2f}%")
 
-        # Salvați și afișați scorurile
+        # Salvați și afișați scorurile TOATE
         scoruri = []
         with open("scoruri.txt", "a") as fisier_scor:
             fisier_scor.write(f"Scor: {scor:.2f}%\n")
