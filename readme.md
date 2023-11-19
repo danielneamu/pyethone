@@ -7,3 +7,5 @@ deactivate
 # see all modules installed
 pip3 freeze
 
+# install & run jupyter lab in venv
+https://anbasile.github.io/posts/2017-06-25-jupyter-venv/

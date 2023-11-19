@@ -1,4 +1,4 @@
-#!/var/www/html/pyethone/.venv/bin/python3
+#!/var/www/html/pyethone/pye_venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
