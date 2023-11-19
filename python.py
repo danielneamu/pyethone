@@ -18,7 +18,7 @@ def UncommonWords(A, B):
     return [word for word in count if count[word] == 1]
   
 # Driver Code
-A = "Geeks for Geeks"
+A = "Teasing Geeks for Geeks"
 B = "Learning from Geeks for Geeks"
   
 # Print required answer
