@@ -1,5 +1,5 @@
 python3 -m venv .venv
-source .venv/bin/activate
+source /var/www/html/pyethone/pye_venv/bin/activate
 
 # deactivate the environment
 deactivate
