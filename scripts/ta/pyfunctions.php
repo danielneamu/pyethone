@@ -1,5 +1,7 @@
 <?php
 
+// runPythonScript is providing technical analysis, graphs and a chatGPT prompt
+
 function runPythonScript($symbol)
 {
     // Specify python script to run
