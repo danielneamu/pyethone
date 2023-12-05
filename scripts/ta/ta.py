@@ -21,8 +21,9 @@ print("Script started", file=sys.stderr)
 symbol = sys.argv[1] if len(sys.argv) > 1 else 'DEFAULT_SYMBOL'
 
 # Define the timeframe
+daysback = 365  #this can be parametrized and send from PHP along with the symbol
 end_date = datetime.today()
-start_date = end_date - timedelta(days=120)
+start_date = end_date - timedelta(days=daysback)
 
 # Debugging: Print a message before fetching stock data
 print("Fetching stock data", file=sys.stderr)
@@ -55,9 +56,66 @@ stock_data.ta.psar(append=True)
 stock_data['OBV_in_million'] = stock_data['OBV'] / 1e7
 stock_data['MACD_histogram_12_26_9'] = stock_data['MACDh_12_26_9']
 
+
+# Create DataFrame
+df = pd.DataFrame(stock_data)
+
+# Simple analysis
+# Analysis in 5 tiers
+if (
+    df['MACD_histogram_12_26_9'].iloc[-1] > 0 and
+    df['RSI_14'].iloc[-1] > 70 and
+    df['STOCHk_14_3_3'].iloc[-1] > df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] > 0
+):
+    prediction = 'Strong Sell'
+elif (
+    df['MACD_histogram_12_26_9'].iloc[-1] > 0 and
+    50 < df['RSI_14'].iloc[-1] <= 70 and
+    df['STOCHk_14_3_3'].iloc[-1] > df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] > 0
+):
+    prediction = 'Sell'
+elif (
+    df['MACD_histogram_12_26_9'].iloc[-1] > 0 and
+    30 < df['RSI_14'].iloc[-1] <= 50 and
+    df['STOCHk_14_3_3'].iloc[-1] > df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] > 0
+):
+    prediction = 'Moderate Sell'
+elif (
+    df['MACD_histogram_12_26_9'].iloc[-1] < 0 and
+    df['RSI_14'].iloc[-1] < 30 and
+    df['STOCHk_14_3_3'].iloc[-1] < df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] < 0
+):
+    prediction = 'Strong Buy'
+elif (
+    df['MACD_histogram_12_26_9'].iloc[-1] < 0 and
+    30 <= df['RSI_14'].iloc[-1] < 50 and
+    df['STOCHk_14_3_3'].iloc[-1] < df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] < 0
+):
+    prediction = 'Buy'
+elif (
+    df['MACD_histogram_12_26_9'].iloc[-1] < 0 and
+    50 <= df['RSI_14'].iloc[-1] <= 70 and
+    df['STOCHk_14_3_3'].iloc[-1] < df['STOCHd_14_3_3'].iloc[-1] and
+    df['CMF_20'].iloc[-1] < 0
+):
+    prediction = 'Moderate Buy'
+else:
+    prediction = 'Hold'
+
+# Display the DataFrame and prediction
+print("\nPrediction:", prediction)
+print("\nPrediction:", df['MACD_histogram_12_26_9'].iloc[-1])
+print("\nPrediction:", df['RSI_14'].iloc[-1])
+
 # Summarize technical indicators for the last day
 last_day_summary = {
     'symbol': symbol,
+    'prediction': prediction,
     'Adj_Close': float(stock_data.iloc[-1]['Adj Close']),
     'MACD_12_26_9': float(stock_data.iloc[-1]['MACD_12_26_9']),
     'MACD_histogram_12_26_9': float(stock_data.iloc[-1]['MACD_histogram_12_26_9']),
@@ -77,8 +135,10 @@ last_day_summary = {
     'PSARs_0.02_0.2': float(stock_data.iloc[-1]['PSARs_0.02_0.2'])
 }
 
+
 # Convert the dictionary to a JSON-formatted string
 json_output = json.dumps(last_day_summary)
+
 
 # Summarize technical indicators for the last day
 day_summary = stock_data.iloc[-1][['Adj Close',
@@ -106,7 +166,10 @@ Summary of Technical Indicators for the Last Day:
 
 last_day_summary['new_prompt'] = new_prompt
 
-print(new_prompt)
+print("\nNew Prompt:\n", new_prompt)
+
+# Display the DataFrame and prediction
+#print("\nPrediction:", prediction)
 
 
 ##############################################################

@@ -1,13 +1,26 @@
 import plotly.express as px
+import yfinance as yf
+import pandas as pd
 
-# Load stock data as a DataFrame and set the date as the index
-df = px.data.stocks(indexed=True)["MSFT"].reset_index()
+msft = yf.Ticker("MSFT")
 
-# Create a bar chart using Plotly Express
-fig = px.line(df, x="date", y="MSFT", title="Google Stock Prices Over tiiiiiiime")
+# get all stock info
+poza=msft.history(period="3y")
+
+tickers = yf.Tickers('msft aapl goog')
+
+# access each ticker using (example)
+#print(tickers.tickers['MSFT'].info)
+#print(tickers.tickers['AAPL'].history(period="1mo"))
+#print(tickers.tickers['GOOG'].actions)
+
+print(poza)
+
+# Create a line chart using Plotly Express
+fig = px.line(poza, x=poza.index, y="Close", title="Google Stock Prices Over tiiiiiiime")
 
 # Show the figure
-fig.show()
+#fig.show()
 
 # Save the figure as an HTML file
 try:
@@ -17,3 +30,12 @@ except Exception as e:
     print(f"Error writing HTML file: {e}")
 
 print("Plot generation successful.")
+
+
+
+
+df = px.data.stocks(indexed=True)-1
+print(df)
+fig = px.area(df, facet_col="company", facet_col_wrap=2)
+#fig.show()
+

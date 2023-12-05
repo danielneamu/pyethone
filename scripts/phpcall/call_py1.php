@@ -1,5 +1,5 @@
 <?php
-// !Calling hello.py script using proc_open - getting back ONE variables
+// !Calling hello.py script using proc_open - getting back ONE variable
 //*Advantages:
 //      Provides more control over input and output streams
 //      Allows capturing both standard output and errors.

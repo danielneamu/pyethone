@@ -64,6 +64,7 @@ if ($returnCode !== 0) {
 
         // Use the variables as needed
         echo "Symbol: $symbol<br>";
+        echo "Prediction: $prediction<br>";
         echo "Adj Close: $adjClose<br>";
         echo "MACD: $macd<br>";
         echo "MACD Histogram: $macdHistogram<br>";
