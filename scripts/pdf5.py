@@ -20,7 +20,7 @@ class PDFProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("File Selection GUI")
-        self.root.geometry("500x300")
+        self.root.geometry("550x400")
         self.root.configure(bg=BACKGROUND_COLOR)
         self.pdf_folder = ""
         self.create_widgets()
@@ -36,6 +36,10 @@ class PDFProcessorApp:
         self.title_label = tk.Label(self.root, text="Select a Folder", font=title_font, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
         self.title_label.pack(pady=20)
 
+        subtitle_font = font.Font(family=FONT_FAMILY, size=10)  # Adjust the font size as needed
+        subtitle_label = tk.Label(root, text="Asigura-te ca nici unul dintre fisiere NU ESTE deschis in alta parte (Adobe)", font=subtitle_font, bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
+        subtitle_label.pack(pady=5)
+        
     def create_browse_button(self):
         browse_button_font = font.Font(family=FONT_FAMILY, size=12, weight="bold")
         self.browse_button = tk.Button(self.root, text="Browse Folder", font=browse_button_font, bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, command=self.browse_folder)
