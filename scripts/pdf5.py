@@ -1,25 +1,28 @@
 # Importing libraries
 import tkinter as tk                    # Importing tkinter for GUI
-from tkinter import filedialog    # Importing filedialog for file browsing
-import tkinter.font as font         # Importing font for customizing fonts
-from tkinter import messagebox  # Importing messagebox for displaying messages to the user
-import os                                   # Importing os for file operations
-import re                                   # Importing re for regex operations
-from datetime import date       # Importing date for date operations
+from tkinter import filedialog          # Importing filedialog for file browsing
+import tkinter.font as font             # Importing font for customizing fonts
+from tkinter import messagebox          # Importing messagebox for displaying messages to the user
+import os                               # Importing os for file operations
+import re                               # Importing re for regex operations
+from datetime import date               # Importing date for date operations
 import PyPDF2                           # Importing PyPDF2 for PDF text extraction
 
 # Define GUI parameters
-BACKGROUND_COLOR = "#f0f0f0"
+BACKGROUND_COLOR = "#FFFFFF"
 FOREGROUND_COLOR = "#333333"
-BUTTON_COLOR = "#4CAF50"
+BUTTON_COLOR = "#008000"
 BUTTON_TEXT_COLOR = "white"
 FONT_FAMILY = "Arial"
+# Define a dictionary for the disabled state style
+DISABLED_STYLE = {"background": "#ECFFDC"}
+ENABLED_STYLE = {"background": "#008000", "fg": "white"}
 
 class PDFProcessorApp:
     # GUI INITIALIZATION
     def __init__(self, root):
         self.root = root
-        self.root.title("File Selection GUI")
+        self.root.title("Redenumire fisiere PDF")
         self.root.geometry("500x300")
         self.root.configure(bg=BACKGROUND_COLOR)
         self.pdf_folder = ""
@@ -46,7 +49,8 @@ class PDFProcessorApp:
         self.folder_path_label.pack()
 
     def create_next_button(self):
-        self.next_button = tk.Button(self.root, text="Next", font=font.Font(family=FONT_FAMILY, size=12, weight="bold"), bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, command=self.go_to_next, state="disabled")
+        self.next_button = tk.Button(self.root, text="Next", font=font.Font(family=FONT_FAMILY, size=12, weight="bold"), bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, command=self.go_to_next, state="disabled", disabledforeground="gray")
+        self.next_button.config(**DISABLED_STYLE)
         self.next_button.pack(pady=20)
     #END OF GUI INITIALISATION
 
@@ -55,8 +59,22 @@ class PDFProcessorApp:
         selected_folder = filedialog.askdirectory(title="Select Folder")
         if selected_folder:
             self.pdf_folder = selected_folder
-            self.folder_path_label.config(text=f"Selected Folder: {selected_folder}")
-            self.next_button.config(state="normal")
+
+            # Check for presence of PDF files
+            has_pdf_files = False
+            for filename in os.listdir(selected_folder):
+                if filename.lower().endswith(".pdf"):  # Check for lowercase extension
+                    has_pdf_files = True
+                    break  # Stop iterating if a PDF is found
+
+            if has_pdf_files:
+                self.folder_path_label.config(text=f"Selected Folder: {selected_folder}")
+                self.next_button.config(state="normal")
+                self.next_button.config(**ENABLED_STYLE)
+            else:
+                # Show error message
+                message_box = messagebox.showerror(title="No PDF Files Found", message="Folderul selectat nu contine nici un fisier de tip PDF.")
+                self.folder_path_label.config(text="")  # Clear previous selection
 
     def extract_text_from_pdf(self, pdf_path):
         try:
