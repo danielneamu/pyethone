@@ -1,12 +1,14 @@
 # Importing libraries
-import tkinter as tk                    # Importing tkinter for GUI
-from tkinter import filedialog          # Importing filedialog for file browsing
-import tkinter.font as font             # Importing font for customizing fonts
-from tkinter import messagebox          # Importing messagebox for displaying messages to the user
-import os                               # Importing os for file operations
-import re                               # Importing re for regex operations
-from datetime import date               # Importing date for date operations
-import PyPDF2                           # Importing PyPDF2 for PDF text extraction
+import tkinter as tk                            # Importing tkinter for GUI
+from tkinter import filedialog            # Importing filedialog for file browsing
+import tkinter.font as font                 # Importing font for customizing fonts
+from tkinter import messagebox       # Importing messagebox for displaying messages to the user
+import os                                            # Importing os for file operations
+import re                                            # Importing re for regex operations
+from datetime import date                # Importing date for date operations
+import PyPDF2                                   # Importing PyPDF2 for PDF text extraction
+import time
+
 
 # Define GUI parameters
 BACKGROUND_COLOR = "#FFFFFF"
@@ -23,7 +25,7 @@ class PDFProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Redenumire fisiere PDF")
-        self.root.geometry("500x300")
+        self.root.geometry("600x400")
         self.root.configure(bg=BACKGROUND_COLOR)
         self.pdf_folder = ""
         self.create_widgets()
@@ -83,6 +85,7 @@ class PDFProcessorApp:
                 full_text = ""
                 for page in pdf_reader.pages:
                     full_text += page.extract_text()
+                    print(full_text)
                 return full_text
         except Exception as e:
             print(f"Error extracting text from PDF {pdf_path}: {e}")
@@ -113,7 +116,6 @@ class PDFProcessorApp:
         new_prefix = f"{extracted_date} {extracted_text}" if extracted_date else f"{extracted_text}"
         new_filename = f"{new_prefix} {base}{ext}"
         new_path = os.path.join(folder, new_filename)
-
         try:
             os.rename(pdf_path, new_path)
             return new_filename
@@ -122,6 +124,20 @@ class PDFProcessorApp:
             messagebox.showerror("File Rename Error", f"Failed to rename file: {pdf_path}\nError: {e}")
             return None
 
+    def generate_new_filename(self, pdf_path, extracted_text, extracted_date):
+        folder, filename = os.path.split(pdf_path)
+        base, ext = os.path.splitext(filename)
+        new_prefix = f"{extracted_date} {extracted_text}" if extracted_date else f"{extracted_text}"
+        new_filename = f"{new_prefix} {base}{ext}"
+        return new_filename
+
+    def clear_window(self):
+        """
+        Print all widgets in the root window and then clear them.
+        """
+        for widget in self.root.winfo_children():
+            print(widget)
+            widget.destroy()
 
     # THE MAIN  trigger of the program is the click on the NEXT buttton
     def go_to_next(self):
@@ -129,11 +145,11 @@ class PDFProcessorApp:
         #if not self.pdf_folder:
         #    messagebox.showinfo("Folder Not Selected", "Please select a folder before proceeding.")
         #    return
+        
+        # Clearing the current window after clicking next
+        self.clear_window() # Clear the window before adding new labels
 
         pdf_files = [f for f in os.listdir(self.pdf_folder) if f.endswith(".pdf")]
-
-        for widget in self.root.pack_slaves():
-            widget.destroy()
 
         confirmation_label = tk.Label(self.root, text=f"Selected folder: {self.pdf_folder}", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
         confirmation_label.pack(pady=20)
@@ -141,16 +157,23 @@ class PDFProcessorApp:
         for pdf_file in pdf_files:
             pdf_path = os.path.join(self.pdf_folder, pdf_file)
             extracted_text = self.extract_text_from_pdf(pdf_path)
-            processing_label = tk.Label(self.root, text=f"Processing: {pdf_file}", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
-            processing_label.pack()
+            # processing_label = tk.Label(self.root, text=f"Processing: {pdf_file}", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
+            # processing_label.pack()
 
             if extracted_text:
                 relevant_text = self.get_relevant_text(extracted_text)
                 extracted_date = self.get_relevant_date(extracted_text)
                 if relevant_text:
-                    new_filename = self.prepend_data_to_filename(pdf_path, relevant_text, extracted_date)
-                    # result_label = tk.Label(self.root, text=f"File renamed: {pdf_file} to {new_filename}", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
-                    # result_label.pack()
+                    ####################################################
+                    # UNCOMMENT FOLLOWING LINE TO START RENAMING THE FILES #
+                    ####################################################
+
+                    # new_filename = self.prepend_data_to_filename(pdf_path, relevant_text, extracted_date)
+                    new_filename = self.generate_new_filename(pdf_path, relevant_text, extracted_date)
+                    result_label = tk.Label(self.root, text=f"{pdf_file} --> {new_filename}", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
+                    result_label.pack()
+                    self.root.update_idletasks()
+                    time.sleep(0.2)
                 else:
                     error_label = tk.Label(self.root, text=f"No relevant text found in {pdf_file}.", font=font.Font(family=FONT_FAMILY, size=12), bg=BACKGROUND_COLOR, fg=FOREGROUND_COLOR)
                     error_label.pack()
