@@ -36,3 +36,4 @@ finally:
     if connection:
         connection.close()
         print("Connection closed.")
+        
