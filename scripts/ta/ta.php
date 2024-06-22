@@ -4,20 +4,22 @@ $symbol = "ARM";
 
 // Specify pyton script to run
 $pythonScriptPath = "/var/www/html/pyethone/scripts/ta/ta.py";
+$venvPath = "/var/www/html/pyethone/pye_venv"; // Path to your virtual environment
+
 // Specify the directory for Matplotlib configuration
 $matplotlibConfigDir = "/home/danielneamu/.config/matplotlib/";
-
-
 // Create the directory if it doesn't exist
 if (!file_exists($matplotlibConfigDir)) {
     mkdir($matplotlibConfigDir, 0777, true);
 }
-
 // Set the MPLCONFIGDIR environment variable
 putenv("MPLCONFIGDIR=$matplotlibConfigDir");
 
+// Command to execute Python script with virtual environment activation
+$command = "{$venvPath}/bin/python3 {$pythonScriptPath} {$symbol} 2>&1";
 // Execute the Python script and capture output and errors
-exec("/var/www/html/pyethone/pye_venv/bin/python $pythonScriptPath $symbol 2>&1", $output, $returnCode);
+exec($command, $output, $returnCode);
+
 
 // Check for errors
 if ($returnCode !== 0) {
