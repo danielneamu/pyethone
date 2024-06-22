@@ -5,7 +5,8 @@ $symbol = "ARM";
 // Specify pyton script to run
 $pythonScriptPath = "/var/www/html/pyethone/scripts/ta/ta.py";
 // Specify the directory for Matplotlib configuration
-$matplotlibConfigDir = "/home/danielneamu/.config/matplotlib/matplotlib_config";
+$matplotlibConfigDir = "/home/danielneamu/.config/matplotlib/";
+
 
 // Create the directory if it doesn't exist
 if (!file_exists($matplotlibConfigDir)) {
