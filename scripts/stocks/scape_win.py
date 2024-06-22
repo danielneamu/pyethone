@@ -8,8 +8,14 @@ import time
 import os
 import psutil
 
+# Get the current directory where your Python script is located
+current_directory = os.getcwd()
+
+# Construct the new path for chromedriver.exe using the current directory
+CHROME_DRIVER_PATH = os.path.join(current_directory, 'chromedriver', 'chromedriver.exe')
+
 # Path to the ChromeDriver
-CHROME_DRIVER_PATH = 'C:\\Users\\daniel.neamu\\Downloads\\py\\stock\\chromedriver\\chromedriver.exe'  # Update this path
+# CHROME_DRIVER_PATH = 'C:\\Users\\daniel.neamu\\Downloads\\py\\stock\\chromedriver\\chromedriver.exe'  # Update this path
 
 def get_webdriver():
     # Configure Chrome WebDriver
