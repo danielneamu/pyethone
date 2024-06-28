@@ -24,7 +24,7 @@ exec($command, $output, $returnCode);
 // Check for errors
 if ($returnCode !== 0) {
     // Print the output and error details
-    echo "Error executing Python script DIN NOU. Return code: $returnCode\n";
+    echo "Error executing Python script. Return code: $returnCode\n";
     echo "Output: " . implode("\n", $output) . "\n";
 } else {
     // Join the output array into a single string

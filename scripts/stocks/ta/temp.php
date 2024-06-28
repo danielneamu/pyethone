@@ -1,12 +1,4 @@
 <?php
-// !Calling hello.py script using shell_exec - getting back ONE variable
-//*Advantages:
-//      Simple and easy to implement.
-//      Suitable for basic use cases.
-//*Considerations:
-//      Potential security risks, especially if user inputs are involved.
-//      Limited control over the execution environment.
-
 // Define the path to the python interpreter (in this case inside venv: pye_venv)
 $pythonInterpreter = '/var/www/html/pyethone/pye_venv/bin/python3';
 

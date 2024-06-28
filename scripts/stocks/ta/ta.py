@@ -3,12 +3,15 @@ import json
 import yfinance as yf
 import pandas_ta as ta
 from datetime import datetime, timedelta
+from numpy import nan as npNaN  # Ensure 'nan' is lowercase
+
 
 # needed for graphs section
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.dates as mdates
 import os  # Import the os module
+
 
 # Redirect stdout to stderr
 sys.stdout = sys.stderr
@@ -17,13 +20,12 @@ sys.stdout = sys.stderr
 print("Script started", file=sys.stderr)
 
 # Define the stock symbol  from command-line arguments
-# symbol = 'AMZN'
+# symbol = 'KO'
 symbol = sys.argv[1] if len(sys.argv) > 1 else 'DEFAULT_SYMBOL'
 
 # Define the timeframe
 daysback = 365  #this can be parametrized and send from PHP along with the symbol
 end_date = datetime.today()
-start_date = end_date - timedelta(days=daysback)
 
 # Debugging: Print a message before fetching stock data
 print("Fetching stock data", file=sys.stderr)
