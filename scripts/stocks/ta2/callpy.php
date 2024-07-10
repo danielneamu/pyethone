@@ -15,7 +15,7 @@ $ticker = isset($_GET['ticker']) ? $_GET['ticker'] : 'RNG';
 $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '2024-01-01';
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '2024-06-28';
 
-$command = "/var/www/html/pyethone/pye_venv/bin/python /var/www/html/pyethone/scripts/stocks/ta2/stock_analyzer.py $ticker $start_date $end_date 2>&1";
+$command = "/var/www/html/pyethone/pye_venv/bin/python /var/www/html/pyethone/scripts/stocks/ta2/stock_analyzer_v2.py $ticker $start_date $end_date 2>&1";
 
 
 // Execute the command
