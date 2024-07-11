@@ -7,6 +7,9 @@ from urllib.parse import urljoin
 import time
 import os
 import psutil
+from datetime import datetime
+
+
 
 # Construct the path to the chromedriver to the current folder from where the script is running
 CHROME_DRIVER_PATH = '/usr/bin/chromedriver'
@@ -98,6 +101,9 @@ def main(input_csv, output_csv):
             writer.writerow(row)
 
 if __name__ == "__main__":
+    today_date = datetime.now().strftime('%Y-%m-%d')
+
     input_csv = 'large_cap_stocks.csv'  # Replace with your input CSV file path
-    output_csv = 'stocks_with_ratings.csv'  # Replace with your desired output CSV file path
+    # Replace with your desired output CSV file path
+    output_csv = f'stocks_with_rating_{today_date}.csv'
     main(input_csv, output_csv)
