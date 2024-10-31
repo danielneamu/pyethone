@@ -23,5 +23,5 @@ for ticker in tickers_list:
 
 
 # get option chain calls data for specific expiration date
-opt = tick.option_chain(date='2023-11-24')
+opt = tick.option_chain(date='2023-11-01')
 print(opt.calls)
