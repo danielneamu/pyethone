@@ -1,5 +1,11 @@
 import yfinance as yf
 import pandas as pd
+from datetime import datetime
+import time
+import os
+
+# Record the start time of the script
+start_time = time.time()
 
 def get_stock_symbols(url, column_name):
     tables = pd.read_html(url)
@@ -27,15 +33,26 @@ for symbol in all_symbols:
         market_cap = stock.info.get('marketCap', 0)
         if market_cap and market_cap > 5e9:
             large_cap_stocks.append(symbol)
-            print(f"Processing symbol {symbol}")
+            #print(f"Processing symbol {symbol}")
     except Exception as e:
         print(f"Error processing symbol {symbol}: {e}")
 
-# Print or save the list of large-cap stocks
+# Print the list of large-cap stocks
 print("Large-cap stocks (market cap > 5bn):")
-for stock in large_cap_stocks:
-    print(stock)
+#for stock in large_cap_stocks:
+#    print(stock)
 
-# Optional: Save to a CSV file
+# Save to a CSV file with current date and time
+current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+output_dir = '/var/www/html/pyethone/scripts/stocks/scrap'
+#output_file = os.path.join(output_dir, f'large_cap_stocks2_{current_datetime}.csv')
+output_file = os.path.join(output_dir, f'large_cap_stocks2.csv')
 large_cap_df = pd.DataFrame(large_cap_stocks, columns=['Symbol'])
-large_cap_df.to_csv('large_cap_stocks2.csv', index=False)
+large_cap_df.to_csv(output_file, index=False)
+
+# Calculate and print the execution time
+end_time = time.time()
+execution_time = end_time - start_time
+current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+print(f"Script to get 5bn cap executed in {execution_time:.2f} seconds at {current_time}")
+print("------------")
