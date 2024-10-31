@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree 
 import itertools
 import os, tempfile, gcsfs
-import newspaper3k as newspaper
+import newspaper3k
 import pathlib
 from newsapi import NewsApiClient
 abspath = pathlib.Path(__file__).parent.resolve()
@@ -86,7 +86,7 @@ def remove_tags(text):
 
 def basicScrapper(url):
     try:
-        article = newspaper.Article(url=url, language='en')
+        article = newspaper3k.Article(url=url, language='en')
         article.download()
         article.parse()
     except Exception as e:
