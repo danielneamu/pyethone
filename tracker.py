@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree 
 import itertools
 import os, tempfile, gcsfs
-import newspaper
+import newspaper3k as newspaper
 import pathlib
 from newsapi import NewsApiClient
 abspath = pathlib.Path(__file__).parent.resolve()
