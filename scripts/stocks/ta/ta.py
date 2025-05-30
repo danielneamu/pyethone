@@ -1,16 +1,47 @@
+import time
+start_time0 = time.time()
+
+# Measure the time to import each module
+start_time = time.time()
 import sys
+print(f"sys import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 import json
+print(f"json import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 import yfinance as yf
+print(f"yfinance import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 import pandas_ta as ta
+print(f"pandas_ta import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 from datetime import datetime, timedelta
-from numpy import nan as npNaN  # Ensure 'nan' is lowercase
+print(f"datetime and timedelta import took {time.time() - start_time:.6f} seconds")
 
+start_time = time.time()
+from numpy import nan as npNaN
+print(f"numpy nan import took {time.time() - start_time:.6f} seconds")
 
-# needed for graphs section
+start_time = time.time()
 import matplotlib.pyplot as plt
+print(f"matplotlib.pyplot import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 import pandas as pd
+print(f"pandas import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
 import matplotlib.dates as mdates
-import os  # Import the os module
+print(f"matplotlib.dates import took {time.time() - start_time:.6f} seconds")
+
+start_time = time.time()
+import os
+print(f"os import took {time.time() - start_time:.6f} seconds")
+print(f"All imports took {time.time() - start_time0:.6f} seconds")
 
 
 # Redirect stdout to stderr
@@ -20,12 +51,13 @@ sys.stdout = sys.stderr
 print("Script started", file=sys.stderr)
 
 # Define the stock symbol  from command-line arguments
-# symbol = 'KO'
-symbol = sys.argv[1] if len(sys.argv) > 1 else 'DEFAULT_SYMBOL'
+symbol = 'PEP'
+#symbol = sys.argv[1] if len(sys.argv) > 1 else 'DEFAULT_SYMBOL'
 
 # Define the timeframe
 daysback = 365  #this can be parametrized and send from PHP along with the symbol
 end_date = datetime.today()
+start_date = "2024-01-01"
 
 # Debugging: Print a message before fetching stock data
 print("Fetching stock data", file=sys.stderr)
@@ -171,7 +203,7 @@ last_day_summary['new_prompt'] = new_prompt
 print("\nNew Prompt:\n", new_prompt)
 
 # Display the DataFrame and prediction
-#print("\nPrediction:", prediction)
+# print("\nPrediction:", prediction)
 
 
 ##############################################################
@@ -183,11 +215,14 @@ plt.figure(figsize=(11, 7))
 
 # Price Trend Chart
 plt.subplot(3, 3, 1)
-plt.plot(stock_data.index, stock_data['Adj Close'], label='Adj Close', color='blue')
+plt.plot(stock_data.index,
+         stock_data['Adj Close'], label='Adj Close', color='blue')
 plt.plot(stock_data.index, stock_data['EMA_50'], label='EMA 50', color='green')
-plt.plot(stock_data.index, stock_data['SMA_20'], label='SMA_20', color='orange')
+plt.plot(stock_data.index,
+         stock_data['SMA_20'], label='SMA_20', color='orange')
 plt.title("Price Trend")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.legend()
 
@@ -195,7 +230,8 @@ plt.legend()
 plt.subplot(3, 3, 2)
 plt.plot(stock_data['OBV'], label='On-Balance Volume')
 plt.title('On-Balance Volume (OBV) Indicator')
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.legend()
 
@@ -204,7 +240,8 @@ plt.subplot(3, 3, 3)
 plt.plot(stock_data['MACD_12_26_9'], label='MACD')
 plt.plot(stock_data['MACDh_12_26_9'], label='MACD Histogram')
 plt.title('MACD Indicator')
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.title("MACD")
 plt.legend()
@@ -215,7 +252,8 @@ plt.plot(stock_data['RSI_14'], label='RSI')
 plt.axhline(y=70, color='r', linestyle='--', label='Overbought (70)')
 plt.axhline(y=30, color='g', linestyle='--', label='Oversold (30)')
 plt.legend()
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.title('RSI Indicator')
 
@@ -224,9 +262,11 @@ plt.subplot(3, 3, 5)
 plt.plot(stock_data.index, stock_data['BBU_5_2.0'], label='Upper BB')
 plt.plot(stock_data.index, stock_data['BBM_5_2.0'], label='Middle BB')
 plt.plot(stock_data.index, stock_data['BBL_5_2.0'], label='Lower BB')
-plt.plot(stock_data.index, stock_data['Adj Close'], label='Adj Close', color='brown')
+plt.plot(stock_data.index,
+         stock_data['Adj Close'], label='Adj Close', color='brown')
 plt.title("Bollinger Bands")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.legend()
 
@@ -235,7 +275,8 @@ plt.subplot(3, 3, 6)
 plt.plot(stock_data.index, stock_data['STOCHk_14_3_3'], label='Stoch %K')
 plt.plot(stock_data.index, stock_data['STOCHd_14_3_3'], label='Stoch %D')
 plt.title("Stochastic Oscillator")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 plt.legend()
 
@@ -243,29 +284,33 @@ plt.legend()
 plt.subplot(3, 3, 7)
 plt.plot(stock_data.index, stock_data['WILLR_14'])
 plt.title("Williams %R")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 
 # ADX Plot
 plt.subplot(3, 3, 8)
 plt.plot(stock_data.index, stock_data['ADX_14'])
 plt.title("Average Directional Index (ADX)")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 
 # CMF Plot
 plt.subplot(3, 3, 9)
 plt.plot(stock_data.index, stock_data['CMF_20'])
 plt.title("Chaikin Money Flow (CMF)")
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
+plt.gca().xaxis.set_major_formatter(
+    mdates.DateFormatter('%b%d'))  # Format date as "Jun14"
 plt.xticks(rotation=45, fontsize=8)  # Adjust font size
 
 # Debugging: Print a message before saving plots
 print("Saving plots", file=sys.stderr)
 
 # Save the plots as images
-plot_images_dir = "/var/www/html/pyethone/scripts/ta/images"  # Change this to the actual path
-#os.makedirs(plot_images_dir, exist_ok=True)  # Ensure the directory exists
+# Change this to the actual path
+plot_images_dir = "/var/www/html/pyethone/scripts/ta/images"
+# os.makedirs(plot_images_dir, exist_ok=True)  # Ensure the directory exists
 
 plot_paths = []  # Store the paths of saved plots
 
