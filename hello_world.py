@@ -1,5 +1,5 @@
-#!/usr/lib/python3
-#  print ("This line will be printed.")
+#!/usr/bin/env python
+print ("This line will be printed.")
 
 
 from flask import Flask
