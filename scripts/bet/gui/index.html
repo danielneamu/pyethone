@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Match Predictor</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>⚽ Football Match Predictor</h1>
+            <p class="subtitle">Advanced ML-powered match outcome predictions</p>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="team-selection">
+                <div class="team-select-group">
+                    <label for="homeTeam">Home Team</label>
+                    <select id="homeTeam" class="team-dropdown">
+                        <option value="">-- Select Home Team --</option>
+                    </select>
+                </div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="team-select-group">
+                    <label for="awayTeam">Away Team</label>
+                    <select id="awayTeam" class="team-dropdown">
+                        <option value="">-- Select Away Team --</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="predictBtn" class="predict-btn" disabled>
+                Get Predictions
+            </button>
+
+            <div class="admin-controls">
+                <button id="retrainBtn" class="retrain-btn">
+                    🔄 Retrain Models
+                </button>
+                <span id="retrainStatus" class="retrain-status"></span>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generating predictions...</p>
+        </div>
+
+        <!-- Error Display -->
+        <div id="errorDisplay" class="error-display" style="display: none;"></div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section" style="display: none;">
+
+            <!-- Match Header -->
+            <div class="match-header">
+                <div class="team-badge home">
+                    <span class="team-name" id="homeTeamName"></span>
+                </div>
+                <div class="versus">VS</div>
+                <div class="team-badge away">
+                    <span class="team-name" id="awayTeamName"></span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="1x2">1X2 Results</button>
+                <button class="tab-btn" data-tab="combined">Combined Bets</button>
+                <button class="tab-btn" data-tab="goals">Goals</button>
+                <button class="tab-btn" data-tab="cards">Cards</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+
+                <!-- 1X2 Tab -->
+                <div id="tab-1x2" class="tab-panel active">
+                    <h2>Match Result Prediction (1X2)</h2>
+
+                    <div class="prediction-grid">
+                        <div class="prediction-card">
+                            <div class="prediction-label">Home Win (1)</div>
+                            <div class="probability" id="homeWinProb">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="homeWinOdds">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="homeWinProgress"></div>
+                            </div>
+                        </div>
+
+                        <div class="prediction-card">
+                            <div class="prediction-label">Draw (X)</div>
+                            <div class="probability" id="drawProb">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="drawOdds">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="drawProgress"></div>
+                            </div>
+                        </div>
+
+                        <div class="prediction-card">
+                            <div class="prediction-label">Away Win (2)</div>
+                            <div class="probability" id="awayWinProb">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="awayWinOdds">--</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="awayWinProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prediction-verdict">
+                        <strong>Predicted Outcome:</strong>
+                        <span id="predictedOutcome" class="verdict-text">--</span>
+                        <span class="confidence-badge" id="confidenceBadge">-- confidence</span>
+                    </div>
+                </div>
+
+                <!-- Combined Outcomes Tab -->
+                <div id="tab-combined" class="tab-panel">
+                    <h2>Combined Outcome Predictions</h2>
+
+                    <div class="prediction-grid">
+                        <div class="prediction-card">
+                            <div class="prediction-label">1X (Home or Draw)</div>
+                            <div class="probability" id="prob1X">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="odds1X">--</span>
+                            </div>
+                            <div class="verdict" id="verdict1X">--</div>
+                        </div>
+
+                        <div class="prediction-card">
+                            <div class="prediction-label">12 (Home or Away)</div>
+                            <div class="probability" id="prob12">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="odds12">--</span>
+                            </div>
+                            <div class="verdict" id="verdict12">--</div>
+                        </div>
+
+                        <div class="prediction-card">
+                            <div class="prediction-label">X2 (Draw or Away)</div>
+                            <div class="probability" id="probX2">--%</div>
+                            <div class="odds-display">
+                                Odds: <span id="oddsX2">--</span>
+                            </div>
+                            <div class="verdict" id="verdictX2">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goals Tab -->
+                <div id="tab-goals" class="tab-panel">
+                    <h2>Goals Predictions</h2>
+
+                    <h3>Match Totals (Over/Under)</h3>
+                    <div class="goals-grid">
+                        <div class="goal-prediction-card">
+                            <div class="threshold">Over/Under 0.5</div>
+                            <div class="over-under-split">
+                                <div class="over-section">
+                                    <span class="label">Over</span>
+                                    <span class="prob" id="over05Prob">--%</span>
+                                    <span class="odds" id="over05Odds">--</span>
+                                </div>
+                                <div class="under-section">
+                                    <span class="label">Under</span>
+                                    <span class="prob" id="under05Prob">--%</span>
+                                    <span class="odds" id="under05Odds">--</span>
+                                </div>
+                            </div>
+                            <div class="prediction" id="pred05">--</div>
+                        </div>
+
+                        <div class="goal-prediction-card">
+                            <div class="threshold">Over/Under 1.5</div>
+                            <div class="over-under-split">
+                                <div class="over-section">
+                                    <span class="label">Over</span>
+                                    <span class="prob" id="over15Prob">--%</span>
+                                    <span class="odds" id="over15Odds">--</span>
+                                </div>
+                                <div class="under-section">
+                                    <span class="label">Under</span>
+                                    <span class="prob" id="under15Prob">--%</span>
+                                    <span class="odds" id="under15Odds">--</span>
+                                </div>
+                            </div>
+                            <div class="prediction" id="pred15">--</div>
+                        </div>
+
+                        <div class="goal-prediction-card highlighted">
+                            <div class="threshold">Over/Under 2.5</div>
+                            <div class="over-under-split">
+                                <div class="over-section">
+                                    <span class="label">Over</span>
+                                    <span class="prob" id="over25Prob">--%</span>
+                                    <span class="odds" id="over25Odds">--</span>
+                                </div>
+                                <div class="under-section">
+                                    <span class="label">Under</span>
+                                    <span class="prob" id="under25Prob">--%</span>
+                                    <span class="odds" id="under25Odds">--</span>
+                                </div>
+                            </div>
+                            <div class="prediction" id="pred25">--</div>
+                        </div>
+                    </div>
+
+                    <h3>Team-Specific Goals</h3>
+                    <div class="team-goals-grid">
+                        <div class="team-goals-section">
+                            <h4 id="homeTeamGoals">Home Team</h4>
+                            <div class="team-goal-card">
+                                <span>Over 0.5:</span>
+                                <span id="homeOver05">--% (odds: --)</span>
+                            </div>
+                            <div class="team-goal-card">
+                                <span>Over 1.5:</span>
+                                <span id="homeOver15">--% (odds: --)</span>
+                            </div>
+                            <div class="team-goal-card">
+                                <span>Over 2.5:</span>
+                                <span id="homeOver25">--% (odds: --)</span>
+                            </div>
+                        </div>
+
+                        <div class="team-goals-section">
+                            <h4 id="awayTeamGoals">Away Team</h4>
+                            <div class="team-goal-card">
+                                <span>Over 0.5:</span>
+                                <span id="awayOver05">--% (odds: --)</span>
+                            </div>
+                            <div class="team-goal-card">
+                                <span>Over 1.5:</span>
+                                <span id="awayOver15">--% (odds: --)</span>
+                            </div>
+                            <div class="team-goal-card">
+                                <span>Over 2.5:</span>
+                                <span id="awayOver25">--% (odds: --)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Tab -->
+                <div id="tab-cards" class="tab-panel">
+                    <h2>Cards Predictions</h2>
+
+                    <div class="cards-grid">
+                        <div class="card-prediction">
+                            <div class="card-icon">📋</div>
+                            <div class="card-label">Total Match Cards</div>
+                            <div class="card-value" id="totalCards">--</div>
+                        </div>
+
+                        <div class="card-prediction">
+                            <div class="card-icon">🏠</div>
+                            <div class="card-label" id="homeTeamCards">Home Team Cards</div>
+                            <div class="card-value" id="homeCards">--</div>
+                        </div>
+
+                        <div class="card-prediction">
+                            <div class="card-icon">✈️</div>
+                            <div class="card-label" id="awayTeamCards">Away Team Cards</div>
+                            <div class="card-value" id="awayCards">--</div>
+                        </div>
+                    </div>
+
+                    <div class="cards-note">
+                        <p><strong>Note:</strong> Card predictions include both yellow and red cards combined. Values
+                            represent the expected total number of cards.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by XGBoost Machine Learning | Data updated: <span id="dataDate">--</span></p>
+        </footer>
+    </div>
+
+    <script src="js/predictions.js"></script>
+</body>
+
+</html>
