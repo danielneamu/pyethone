@@ -16,8 +16,8 @@ PROCESSED_DATA = os.path.join(DATA_DIR, "processed/features.csv")
 
 # Model parameters
 RECENT_MATCHES_WEIGHT = 1.5  # Weight multiplier for recent season data
-FORM_WINDOW = 5              # Last N matches for form calculation
-H2H_WINDOW = 10              # Last N head-to-head matches
+FORM_WINDOW = 5             # Last N matches for form calculation
+H2H_WINDOW = 10             # Last N head-to-head matches
 
 # Training parameters
 TEST_SIZE = 0.15             # 15% data for validation
