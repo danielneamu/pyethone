@@ -1,0 +1,47 @@
+body {
+    background: #f7f9fa;
+}
+
+.card {
+    border-radius: 18px;
+}
+
+.card-header {
+    border-radius: 18px 18px 0 0 !important;
+}
+
+.btn-primary, .btn-danger, .btn-info, .btn-success, .btn-warning {
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.progress {
+    border-radius: 8px !important;
+    height: 18px;
+}
+
+@media (max-width: 991.98px) {
+    .card-header, .card-body {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+footer {
+    margin-top: 2rem;
+    font-size: 0.98em;
+    background: #f6f8fa;
+    border-top: 1px solid #edf0f5;
+}
+
+select.form-select,
+input.form-control {
+    border-radius: 7px;
+    font-size: 1em;
+}
+
+#resultsContainer .card {
+    margin-bottom: 1.25rem;
+    border-left: 4px solid #0d6efd15;
+}

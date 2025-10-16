@@ -1,57 +1,114 @@
 <?php
+
 /**
- * Predict API - Direct PHP to Python
- * Generates match predictions
- * 
- * Usage: predict_api.php?home_team=Arsenal&away_team=Chelsea&competition=premier_league
+ * Prediction API Endpoint
+ * Receives match prediction requests and calls Python backend
  */
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Configuration
-define('PYTHON_BIN', '/var/www/html/pyethone/pye_venv/bin/python');
-define('PYTHON_SCRIPT', '/var/www/html/pyethone/scripts/bet2/python_api/predict.py');
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
-try {
-    // Get parameters
-    $home_team = $_GET['home_team'] ?? '';
-    $away_team = $_GET['away_team'] ?? '';
-    $competition = $_GET['competition'] ?? 'premier_league';
+// Only allow POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
 
-    // Validate
-    if (empty($home_team) || empty($away_team)) {
-        throw new Exception('Both home_team and away_team are required');
-    }
+// Read JSON input
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
 
-    // Build command
-    $command = escapeshellcmd(PYTHON_BIN . ' ' . PYTHON_SCRIPT) . ' ' . 
-               escapeshellarg($home_team) . ' ' . 
-               escapeshellarg($away_team) . ' ' . 
-               escapeshellarg($competition);
+// Validate input
+if (!$data) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+    exit;
+}
 
-    // Execute with timeout (predictions can take 3-5 seconds)
-    $command .= ' 2>&1';
-    $output = shell_exec($command);
+$homeTeam = $data['home_team'] ?? null;
+$awayTeam = $data['away_team'] ?? null;
+$competition = $data['competition'] ?? 'premier_league';
+$modelType = $data['model_type'] ?? 'ensemble';
 
-    if ($output === null) {
-        throw new Exception('Failed to execute prediction script');
-    }
-
-    // Decode JSON
-    $result = json_decode($output, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON from Python: ' . $output);
-    }
-
-    // Return result
-    echo json_encode($result);
-
-} catch (Exception $e) {
+// Validate required fields
+if (!$homeTeam || !$awayTeam) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'error' => 'Both home_team and away_team are required',
+        'received' => [
+            'home_team' => $homeTeam,
+            'away_team' => $awayTeam
+        ]
     ]);
+    exit;
 }
-?>
+
+// Validate teams are different
+if ($homeTeam === $awayTeam) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Teams must be different']);
+    exit;
+}
+
+// Validate model type
+$validModels = ['xgboost', 'randomforest', 'ensemble'];
+if (!in_array($modelType, $validModels)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid model type']);
+    exit;
+}
+
+// Path to Python script
+$pythonScript = __DIR__ . '/../../python_api/predict.py';
+$venvPython = '/var/www/html/pyethone/pye_venv/bin/python3';
+
+// Escape arguments
+$homeTeamEscaped = escapeshellarg($homeTeam);
+$awayTeamEscaped = escapeshellarg($awayTeam);
+$competitionEscaped = escapeshellarg($competition);
+$modelTypeEscaped = escapeshellarg($modelType);
+
+// Build command
+$command = sprintf(
+    '%s %s %s %s %s %s 2>&1',
+    $venvPython,
+    escapeshellarg($pythonScript),
+    $homeTeamEscaped,
+    $awayTeamEscaped,
+    $competitionEscaped,
+    $modelTypeEscaped
+);
+
+// Execute Python script
+$output = shell_exec($command);
+
+// Parse JSON response
+$result = json_decode($output, true);
+
+if ($result === null) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Failed to parse Python response',
+        'raw_output' => $output
+    ]);
+    exit;
+}
+
+// Add model_type to response if not present
+if (!isset($result['model_type'])) {
+    $result['model_type'] = $modelType;
+}
+
+// Return result
+echo json_encode($result);
