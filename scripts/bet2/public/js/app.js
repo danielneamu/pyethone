@@ -194,63 +194,179 @@ function displayResults(data) {
  * Generate Match Result card HTML
  */
 function generateMatchResultCard(matchResult) {
-    return `
+    const homeProb = (matchResult.probabilities.home_win * 100).toFixed(1);
+    const drawProb = (matchResult.probabilities.draw * 100).toFixed(1);
+    const awayProb = (matchResult.probabilities.away_win * 100).toFixed(1);
+
+    // Changed from confidence to certainty
+    const certainty = (matchResult.certainty * 100).toFixed(1);
+    const certaintyLevel = matchResult.certainty_level;
+
+    let html = `
         <div class="card shadow-sm mb-3">
-            <div class="card-header bg-success text-white">
+            <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
                     <i class="bi bi-trophy-fill me-2"></i>
-                    Match Result (1X2)
+                    Match Result Prediction
+                    <span class="badge bg-light text-dark fs-6 ms-2">
+                        ${matchResult.prediction}
+                    </span>
                 </h5>
             </div>
             <div class="card-body">
-                <div class="row text-center">
-                    ${generateProbabilityColumn('Home Win', matchResult.probabilities.home_win, matchResult.prediction === 'Home Win')}
-                    ${generateProbabilityColumn('Draw', matchResult.probabilities.draw, matchResult.prediction === 'Draw')}
-                    ${generateProbabilityColumn('Away Win', matchResult.probabilities.away_win, matchResult.prediction === 'Away Win')}
+                <div class="mb-3">
+                    <h6>Prediction: <strong>${matchResult.prediction}</strong></h6>
+                    <span class="badge bg-secondary">Certainty: ${certainty}%</span>
+                    <span class="badge bg-info ms-2">${certaintyLevel}</span>
                 </div>
-                <div class="mt-3 text-center">
-                    <span class="badge bg-success fs-6">
-                        Prediction: ${matchResult.prediction}
-                    </span>
-                    <span class="badge bg-secondary fs-6 ms-2">
-                        Confidence: ${(matchResult.confidence * 100).toFixed(1)}%
-                    </span>
+                
+                <h6 class="mb-3">Probabilities:</h6>
+                
+                <!-- Home Win -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-house-fill text-success me-1"></i> Home Win</span>
+                        <strong>${homeProb}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-success" style="width: ${homeProb}%">
+                            ${homeProb}%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Draw -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-dash-circle text-warning me-1"></i> Draw</span>
+                        <strong>${drawProb}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-warning" style="width: ${drawProb}%">
+                            ${drawProb}%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Away Win -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-airplane-fill text-danger me-1"></i> Away Win</span>
+                        <strong>${awayProb}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-danger" style="width: ${awayProb}%">
+                            ${awayProb}%
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     `;
+
+    return html;
 }
+
 
 /**
  * Generate Double Chance card HTML
  */
+/**
+ * Generate Double Chance card
+ */
 function generateDoubleChanceCard(doubleChance) {
-    return `
+    const prob1X = (doubleChance.probabilities['1X'] * 100).toFixed(1);
+    const prob12 = (doubleChance.probabilities['12'] * 100).toFixed(1);
+    const probX2 = (doubleChance.probabilities['X2'] * 100).toFixed(1);
+
+    const certainty = (doubleChance.certainty * 100).toFixed(1);
+    const certaintyLevel = doubleChance.certainty_level;
+
+    let html = `
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">
-                    <i class="bi bi-diagram-3-fill me-2"></i>
+                    <i class="bi bi-shield-check me-2"></i>
                     Double Chance
+                    <span class="badge bg-light text-dark fs-6 ms-2">
+                        ${doubleChance.prediction}
+                    </span>
                 </h5>
             </div>
             <div class="card-body">
-                <div class="row text-center">
-                    ${generateProbabilityColumn('1X (Home/Draw)', doubleChance.probabilities['1X'], doubleChance.prediction === '1X')}
-                    ${generateProbabilityColumn('12 (Home/Away)', doubleChance.probabilities['12'], doubleChance.prediction === '12')}
-                    ${generateProbabilityColumn('X2 (Draw/Away)', doubleChance.probabilities['X2'], doubleChance.prediction === 'X2')}
+                <div class="mb-3">
+                    <h6>Best Option: <strong>${doubleChance.prediction}</strong></h6>
+                    <span class="badge bg-secondary">Certainty: ${certainty}%</span>
+                    <span class="badge bg-info ms-2">${certaintyLevel}</span>
                 </div>
-                <div class="mt-3 text-center">
-                    <span class="badge bg-info fs-6">
-                        Prediction: ${doubleChance.prediction}
-                    </span>
-                    <span class="badge bg-secondary fs-6 ms-2">
-                        Confidence: ${(doubleChance.confidence * 100).toFixed(1)}%
-                    </span>
+                
+                <h6 class="mb-3">Double Chance Options:</h6>
+                
+                <!-- 1X (Home or Draw) -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>
+                            <i class="bi bi-1-circle me-1"></i>
+                            1X (Home Win or Draw)
+                        </span>
+                        <strong>${prob1X}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar ${doubleChance.prediction === '1X' ? 'bg-success' : 'bg-secondary'}" 
+                             style="width: ${prob1X}%">
+                            ${prob1X}%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 12 (Home or Away) -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>
+                            <i class="bi bi-intersect me-1"></i>
+                            12 (Home Win or Away Win)
+                        </span>
+                        <strong>${prob12}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar ${doubleChance.prediction === '12' ? 'bg-success' : 'bg-secondary'}" 
+                             style="width: ${prob12}%">
+                            ${prob12}%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- X2 (Draw or Away) -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>
+                            <i class="bi bi-2-circle me-1"></i>
+                            X2 (Draw or Away Win)
+                        </span>
+                        <strong>${probX2}%</strong>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar ${doubleChance.prediction === 'X2' ? 'bg-success' : 'bg-secondary'}" 
+                             style="width: ${probX2}%">
+                            ${probX2}%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-light mt-3 mb-0">
+                    <small>
+                        <i class="bi bi-info-circle me-1"></i>
+                        Double Chance betting covers two of the three possible outcomes, providing safer odds.
+                    </small>
                 </div>
             </div>
         </div>
     `;
+
+    return html;
 }
+
+
 
 
 /**
@@ -259,69 +375,70 @@ function generateDoubleChanceCard(doubleChance) {
 function generateGoalsCard(goals) {
     let html = `
         <div class="card shadow-sm mb-3">
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-success text-white">
                 <h5 class="mb-0">
                     <i class="bi bi-bullseye me-2"></i>
                     Goals Predictions
                 </h5>
             </div>
             <div class="card-body">
-                <div class="row">
     `;
 
-    // Over/Under predictions with confidence
+    // Over/Under predictions
     ['over_0.5', 'over_1.5', 'over_2.5', 'over_3.5'].forEach(key => {
         if (goals[key]) {
+            const data = goals[key];
             const threshold = key.replace('over_', '');
-            const confidence = (goals[key].confidence * 100).toFixed(1);
+            const certainty = (data.certainty * 100).toFixed(1);  // Changed from confidence
+
             html += `
-                <div class="col-md-6 mb-3">
-                    <div class="border rounded p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="mb-0">Over/Under ${threshold}</h6>
-                            <span class="badge bg-secondary">${confidence}%</span>
-                        </div>
-                        ${generateProbabilityBar('Over', goals[key].probability_over, goals[key].prediction === 'Over')}
-                        <div class="mt-2">
-                            <span class="badge ${goals[key].prediction === 'Over' ? 'bg-success' : 'bg-danger'}">
-                                ${goals[key].prediction}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">Over/Under ${threshold} Goals</h6>
+                        <div>
+                            <span class="badge ${data.prediction === 'Over' ? 'bg-success' : 'bg-danger'}">
+                                ${data.prediction}
                             </span>
+                            <span class="badge bg-secondary ms-2">${certainty}%</span>
+                            <span class="badge bg-info ms-1">${data.certainty_level}</span>
                         </div>
                     </div>
+                    ${generateProbabilityBar('Over', data.probability_over, data.prediction === 'Over')}
                 </div>
             `;
         }
     });
 
-    // BTTS with confidence
+    // BTTS
     if (goals.btts) {
-        const confidence = (goals.btts.confidence * 100).toFixed(1);
+        const btts = goals.btts;
+        const certainty = (btts.certainty * 100).toFixed(1);  // Changed from confidence
+
         html += `
-            <div class="col-md-6 mb-3">
-                <div class="border rounded p-3 bg-light">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">Both Teams To Score</h6>
-                        <span class="badge bg-secondary">${confidence}%</span>
-                    </div>
-                    ${generateProbabilityBar('Yes', goals.btts.probability_yes, goals.btts.prediction === 'Yes')}
-                    <div class="mt-2">
-                        <span class="badge ${goals.btts.prediction === 'Yes' ? 'bg-success' : 'bg-danger'}">
-                            ${goals.btts.prediction}
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Both Teams To Score (BTTS)</h6>
+                    <div>
+                        <span class="badge ${btts.prediction === 'Yes' ? 'bg-success' : 'bg-danger'}">
+                            ${btts.prediction}
                         </span>
+                        <span class="badge bg-secondary ms-2">${certainty}%</span>
+                        <span class="badge bg-info ms-1">${btts.certainty_level}</span>
                     </div>
                 </div>
+                ${generateProbabilityBar('Yes', btts.probability_yes, btts.prediction === 'Yes')}
             </div>
         `;
     }
 
     html += `
-                </div>
             </div>
         </div>
     `;
 
     return html;
 }
+
 
 
 /**
@@ -345,13 +462,17 @@ function generateCardsCard(cards) {
         Object.keys(cards.total_match).forEach(key => {
             const threshold = key.replace('over_', '');
             const data = cards.total_match[key];
-            const confidence = (data.confidence * 100).toFixed(1);
+            const certainty = (data.certainty * 100).toFixed(1);  // Changed from confidence
+
             html += `
                 <div class="col-md-4 mb-3">
                     <div class="border rounded p-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0">O/U ${threshold}</h6>
-                            <span class="badge bg-secondary">${confidence}%</span>
+                            <span class="badge bg-secondary">${certainty}%</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="badge bg-info">${data.certainty_level}</span>
                         </div>
                         ${generateProbabilityBar('Over', data.probability_over, data.prediction === 'Over')}
                         <div class="mt-2">
@@ -366,7 +487,7 @@ function generateCardsCard(cards) {
         html += '</div>';
     }
 
-    // Home team cards with bars
+    // Home team cards
     if (cards.home_team) {
         html += `
             <h6 class="mb-2">
@@ -379,13 +500,17 @@ function generateCardsCard(cards) {
             if (cards.home_team[key]) {
                 const data = cards.home_team[key];
                 const threshold = key.replace('over_', '');
-                const confidence = (data.confidence * 100).toFixed(1);
+                const certainty = (data.certainty * 100).toFixed(1);  // Changed from confidence
+
                 html += `
                     <div class="col-md-6 mb-3">
                         <div class="border rounded p-3 bg-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="mb-0">O/U ${threshold}</h6>
-                                <span class="badge bg-secondary">${confidence}%</span>
+                                <span class="badge bg-secondary">${certainty}%</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge bg-info">${data.certainty_level}</span>
                             </div>
                             ${generateProbabilityBar('Over', data.probability_over, data.prediction === 'Over')}
                             <div class="mt-2">
@@ -401,7 +526,7 @@ function generateCardsCard(cards) {
         html += '</div>';
     }
 
-    // Away team cards with bars
+    // Away team cards (same pattern)
     if (cards.away_team) {
         html += `
             <h6 class="mb-2">
@@ -414,13 +539,17 @@ function generateCardsCard(cards) {
             if (cards.away_team[key]) {
                 const data = cards.away_team[key];
                 const threshold = key.replace('over_', '');
-                const confidence = (data.confidence * 100).toFixed(1);
+                const certainty = (data.certainty * 100).toFixed(1);  // Changed from confidence
+
                 html += `
                     <div class="col-md-6 mb-3">
                         <div class="border rounded p-3 bg-light">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="mb-0">O/U ${threshold}</h6>
-                                <span class="badge bg-secondary">${confidence}%</span>
+                                <span class="badge bg-secondary">${certainty}%</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge bg-info">${data.certainty_level}</span>
                             </div>
                             ${generateProbabilityBar('Over', data.probability_over, data.prediction === 'Over')}
                             <div class="mt-2">
@@ -588,3 +717,110 @@ function copyJsonToClipboard() {
         }, 2000);
     });
 }
+
+
+/**
+ * Admin Controls - Update Data
+ */
+document.getElementById('updateDataBtn').addEventListener('click', async function () {
+    const btn = this;
+    const statusDiv = document.getElementById('updateDataStatus');
+
+    // Disable button
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+
+    try {
+        const response = await fetch(`${API_BASE}/update_data_api.php`, {
+            method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            statusDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Data update started! Check logs for progress.
+                    <br><small>Started at: ${data.started_at}</small>
+                </div>
+            `;
+
+            // Re-enable after 3 minutes
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Update Match Data';
+            }, 180000);
+        } else {
+            throw new Error(data.error || 'Update failed');
+        }
+    } catch (error) {
+        statusDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Error: ${error.message}
+            </div>
+        `;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Update Match Data';
+    }
+});
+
+/**
+ * Admin Controls - Retrain Models
+ */
+document.getElementById('retrainBtn').addEventListener('click', async function () {
+    const btn = this;
+    const statusDiv = document.getElementById('retrainStatus');
+
+    // Confirm action
+    if (!confirm('Retrain all models? This will take 3-5 minutes.')) {
+        return;
+    }
+
+    // Disable button
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Training...';
+
+    try {
+        const response = await fetch(`${API_BASE}/retrain_api.php`, {
+            method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            statusDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Model retraining started!
+                    <br><small>Started at: ${data.started_at}</small>
+                    <br><small>Training: ${data.scripts.join(', ')}</small>
+                </div>
+            `;
+
+            // Re-enable after 5 minutes
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-cpu-fill me-2"></i>Retrain Models';
+                statusDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Training complete! Models updated.
+                    </div>
+                `;
+            }, 300000);
+        } else {
+            throw new Error(data.error || 'Training failed');
+        }
+    } catch (error) {
+        statusDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Error: ${error.message}
+            </div>
+        `;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cpu-fill me-2"></i>Retrain Models';
+    }
+});

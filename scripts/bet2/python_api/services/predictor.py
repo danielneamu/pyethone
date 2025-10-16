@@ -43,6 +43,53 @@ class Predictor:
         df_with_features = self.feature_engineer.generate_features(df)
         return df_with_features
 
+    def _calculate_certainty(self, probabilities: dict, prediction_type: str = 'multi') -> tuple:
+        """
+        Calculate prediction certainty based on probability distribution
+        
+        Args:
+            probabilities: Dict of outcome probabilities
+            prediction_type: 'multi' (3+ outcomes) or 'binary' (2 outcomes)
+        
+        Returns:
+            (certainty_score, certainty_level)
+        """
+        probs_sorted = sorted(probabilities.values(), reverse=True)
+        max_prob = probs_sorted[0]
+
+        if prediction_type == 'multi' and len(probs_sorted) >= 2:
+            # Multi-class: certainty = margin between 1st and 2nd place
+            second_prob = probs_sorted[1]
+            margin = max_prob - second_prob
+
+            # Normalize margin (can range from 0 to ~0.9)
+            # Scale it to make it more interpretable
+            certainty = min(margin * 1.5, 1.0)
+
+        elif prediction_type == 'binary' and len(probs_sorted) >= 2:
+            # Binary: certainty = how far from 50/50
+            margin = abs(max_prob - 0.5)
+            certainty = margin * 2  # Scale to 0-1 range
+
+        else:
+            # Fallback: use max probability
+            certainty = max_prob
+
+        # Certainty levels
+        if certainty >= 0.7:
+            level = "Very High"
+        elif certainty >= 0.5:
+            level = "High"
+        elif certainty >= 0.3:
+            level = "Medium"
+        elif certainty >= 0.15:
+            level = "Low"
+        else:
+            level = "Very Low"
+
+        return round(certainty, 4), level
+
+
     def predict_match(self, home_team: str, away_team: str) -> Dict:
         """
         Generate prediction for a match
@@ -221,17 +268,21 @@ class Predictor:
 
         result_map = {0: 'Home Win', 1: 'Draw', 2: 'Away Win'}
         predicted_result = result_map[prediction]
-        confidence = float(max(probabilities))
+
+        # Calculate certainty (margin-based)
+        prob_dict = {
+            'home_win': float(probabilities[0]),
+            'draw': float(probabilities[1]),
+            'away_win': float(probabilities[2])
+        }
+        certainty, certainty_level = self._calculate_certainty(
+            prob_dict, 'multi')
 
         return {
             'prediction': predicted_result,
-            'probabilities': {
-                'home_win': float(probabilities[0]),
-                'draw': float(probabilities[1]),
-                'away_win': float(probabilities[2])
-            },
-            'confidence': confidence,
-            'confidence_level': self._get_confidence_level(confidence)
+            'probabilities': prob_dict,
+            'certainty': certainty,
+            'certainty_level': certainty_level
         }
 
     def _predict_goals(self, features: np.ndarray) -> Dict:
@@ -261,12 +312,20 @@ class Predictor:
                     probability = model.predict_proba(features)[0][1]
                     prediction = model.predict(features)[0]
 
+                # Calculate certainty
+                prob_dict = {'over': float(
+                    probability), 'under': float(1 - probability)}
+                certainty, certainty_level = self._calculate_certainty(
+                    prob_dict, 'binary')
+
                 goals_predictions[display_name] = {
                     'prediction': 'Over' if prediction == 1 else 'Under',
                     'probability_over': float(probability),
                     'probability_under': float(1 - probability),
-                    'confidence': float(max(probability, 1 - probability))
+                    'certainty': certainty,
+                    'certainty_level': certainty_level
                 }
+
             except (KeyError, FileNotFoundError, Exception) as e:
                 logger.warning(f"Model for {display_name} not available: {e}")
 
@@ -284,12 +343,20 @@ class Predictor:
                 probability = btts_model.predict_proba(features)[0][1]
                 prediction = btts_model.predict(features)[0]
 
+            # Calculate certainty
+            prob_dict = {'yes': float(probability),
+                         'no': float(1 - probability)}
+            certainty, certainty_level = self._calculate_certainty(
+                prob_dict, 'binary')
+
             goals_predictions['btts'] = {
                 'prediction': 'Yes' if prediction == 1 else 'No',
                 'probability_yes': float(probability),
                 'probability_no': float(1 - probability),
-                'confidence': float(max(probability, 1 - probability))
+                'certainty': certainty,
+                'certainty_level': certainty_level
             }
+
         except (KeyError, FileNotFoundError, Exception) as e:
             logger.warning(f"BTTS model not available: {e}")
 
@@ -333,12 +400,18 @@ class Predictor:
                     probability = model.predict_proba(features)[0][1]
                     prediction = model.predict(features)[0]
 
+                prob_dict = {'over': float(probability), 'under': float(1 - probability)}
+                certainty, certainty_level = self._calculate_certainty(prob_dict, 'binary')
+                
                 cards_predictions['total_match'][display_name] = {
                     'prediction': 'Over' if prediction == 1 else 'Under',
                     'probability_over': float(probability),
                     'probability_under': float(1 - probability),
-                    'confidence': float(max(probability, 1 - probability))
+                    'certainty': certainty,
+                    'certainty_level': certainty_level
                 }
+
+
             except (KeyError, FileNotFoundError, Exception) as e:
                 logger.warning(
                     f"Model for total {display_name} not available: {e}")
@@ -365,12 +438,19 @@ class Predictor:
                     probability = model.predict_proba(features)[0][1]
                     prediction = model.predict(features)[0]
 
+                # Calculate certainty
+                prob_dict = {'over': float(probability), 'under': float(1 - probability)}
+                certainty, certainty_level = self._calculate_certainty(prob_dict, 'binary')
+                
                 cards_predictions['home_team'][display_name] = {
                     'prediction': 'Over' if prediction == 1 else 'Under',
                     'probability_over': float(probability),
                     'probability_under': float(1 - probability),
-                    'confidence': float(max(probability, 1 - probability))
+                    'certainty': certainty,
+                    'certainty_level': certainty_level
                 }
+
+
             except (KeyError, FileNotFoundError, Exception) as e:
                 logger.warning(
                     f"Home team cards {display_name} not available: {e}")
@@ -397,12 +477,20 @@ class Predictor:
                         probability = model.predict_proba(away_features)[0][1]
                         prediction = model.predict(features)[0]
 
+                    # Calculate certainty
+                    prob_dict = {'over': float(
+                        probability), 'under': float(1 - probability)}
+                    certainty, certainty_level = self._calculate_certainty(
+                        prob_dict, 'binary')
+
                     cards_predictions['away_team'][display_name] = {
                         'prediction': 'Over' if prediction == 1 else 'Under',
                         'probability_over': float(probability),
                         'probability_under': float(1 - probability),
-                        'confidence': float(max(probability, 1 - probability))
+                        'certainty': certainty,
+                        'certainty_level': certainty_level
                     }
+
                 except (KeyError, FileNotFoundError, Exception) as e:
                     logger.warning(
                         f"Away team cards {display_name} not available: {e}")
@@ -438,16 +526,21 @@ class Predictor:
             key=lambda x: x[1]
         )
 
+        prob_dict = {
+            '1X': float(prob_1x),
+            'X2': float(prob_x2),
+            '12': float(prob_12)
+        }
+        certainty, certainty_level = self._calculate_certainty(
+            prob_dict, 'multi')
+
         return {
             'prediction': best_option[0],
-            'probabilities': {
-                '1X': float(prob_1x),
-                'X2': float(prob_x2),
-                '12': float(prob_12)
-            },
-            'confidence': float(best_option[1]),
-            'confidence_level': self._get_confidence_level(best_option[1])
+            'probabilities': prob_dict,
+            'certainty': certainty,
+            'certainty_level': certainty_level
         }
+
 
     @staticmethod
     def _get_confidence_level(confidence: float) -> str:

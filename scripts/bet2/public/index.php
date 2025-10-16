@@ -156,6 +156,54 @@ require_once __DIR__ . '/../php_backend/config.php';
         </div>
     </div>
 
+    <!-- Admin Controls Section -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-warning">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0">
+                            <i class="bi bi-gear-fill me-2"></i>
+                            Admin Controls
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Update Data Button -->
+                            <div class="col-md-6 mb-3">
+                                <div class="d-grid">
+                                    <button id="updateDataBtn" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-arrow-clockwise me-2"></i>
+                                        Update Match Data
+                                    </button>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    Scrape latest matches from FBRef (takes ~2-3 minutes)
+                                </small>
+                                <div id="updateDataStatus" class="mt-2"></div>
+                            </div>
+
+                            <!-- Retrain Models Button -->
+                            <div class="col-md-6 mb-3">
+                                <div class="d-grid">
+                                    <button id="retrainBtn" class="btn btn-success btn-lg">
+                                        <i class="bi bi-cpu-fill me-2"></i>
+                                        Retrain Models
+                                    </button>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    Retrain all prediction models (takes ~3-5 minutes)
+                                </small>
+                                <div id="retrainStatus" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Footer -->
     <footer class="bg-light py-3 mt-5">
         <div class="container text-center text-muted">
