@@ -1,0 +1,107 @@
+Header, Explanation
+team_name,Team Name
+team_code,Team Code
+round,Round
+dayofweek,Day of the week the match is played
+date,Date the match was played
+comp,Competition
+venue,Venue (Away from home, Home)
+result,Result (W-win, D-draw, L-lost)
+opponent,Opponent Team
+goals_for,Goals for
+goals_against,Goals against
+xg_for,Expected Goals for
+xg_against,Expected Goals against
+possession,Possession
+attendance,Attendance
+captain,Captain
+formation,Formation 
+referee,Referee
+shots,Shots total for
+shots_on_target,Shots on target_for
+shots_on_target_pct,Shots on target % for
+goals_per_shot,Goals per shot for
+goals_per_shot_on_target,Goals per shot on target for
+average_shot_distance,Average shot distance for
+shots_free_kicks,Shots from free kicks for
+pens_made,Penalty kick made for
+pens_att,Penalty kick attempted for
+expected_goals,Expected Goals for
+expected_goals_non_penalty,Expected Goals Non Penalty for
+expected_goals_non_penalty_per_shot,Expected Goals Non Penalty per shot for
+expected_goals_net,Goals minus Expected Goals for
+expected_goals_non_penalty_net,Non penalty Goals minus non penalty Expected Goals
+shots_against,Shots total against
+shots_on_target_against,Shots on target against
+shots_on_target_pct_against,Shots on target % against
+goals_per_shot_against,Goals per shot against
+goals_per_shot_on_target_against,Goals per shot on target against
+average_shot_distance_against,Average shot distance against
+shots_free_kicks_against,Shots from free kicks against
+pens_made_against,Penalty kick made against
+pens_att_against,Penalty kick attempted against
+expected_goals_against,Expected Goals against
+expected_goals_non_penalty_against,Expected Goals Non Penalty against
+expected_goals_non_penalty_per_shot_against,Expected Goals Non Penalty per shot against
+expected_goals_net_against,Goals minus Expected Goals against
+expected_goals_non_penalty_against,Non penalty Goals minus non penalty Expected Goals against
+sca,Shot Creating Action
+sca_passes_live,SCA (live ball pass)
+sca_passes_dead,SCA (dead pass ball)
+sca_take_ons,SCA (take on)
+sca_shots,SCA (shot)
+sca_fouled,SCA (fouls drawn)
+sca_defense,SCA (Defensive action)
+gca,GCA - Goal creating action
+gca_passes_live,GCA (live ball pass)
+gca_passes_dead,GCA (dead pass ball)
+gca_take_ons,GCA (take on)
+gca_shots,GCA (shot)
+gca_fouled,GCA (fouls drawn)
+gca_defense,GCA (Defensive action)
+sca_against,Shot Creating Action against
+sca_passes_live_against,SCA (live ball pass) against
+sca_passes_dead_against,SCA (dead pass ball)against
+sca_take_ons_against,SCA (take on)
+sca_shots_against,SCA (shot) against
+sca_fouled_against,SCA (fouls drawn) against
+sca_defense_against,SCA (Defensive action) against
+gca_against,GCA - Goal creating action against
+gca_passes_live_against,GCA (live ball pass)against
+gca_passes_dead_against,GCA (dead pass ball) against
+gca_take_ons_against,GCA (take on) against
+gca_shots_against,GCA (shot) against
+gca_fouled_against,GCA (fouls drawn) against
+gca_defense_against,GCA (Defensive action) against
+cards_yellow,Cards Yellow for
+cards_red,Cards red for
+cards_yellow_red,Second yellow card for
+fouls,Fouls commited
+fouled,Fouls Drown
+offsides,Offsides
+crosses,Crosses for
+interceptions,Interceptions for
+tackles_won,Tackles won
+pens_won,Pens won
+pens_conceded,Pens conceded
+own_goals,Own Goals
+ball_recoveries,Ball recoveries
+aerials_won,Aerial duels won
+aerials_lost,Aerial duels lost
+aerials_won_pct,% of Aerial duels won
+cards_yellow_against,Opposition team yellow cards
+cards_red_against,Opposition team red cards
+cards_yellow_red_against,Opposition team second yellow
+fouls_against,Opposition team fouls committed
+fouled_against,Opposition team fouls drown
+offsides_against,Opposition team offsides
+crosses_against,Opposition team crosses
+interceptions_against,Opposition team interceptions
+tackles_won_against,Opposition team tackles won
+pens_won_against,Opposition team pens won
+pens_conceded_against,Opposition team pens conceded
+own_goals_against,Opposition team own goals
+ball_recoveries_against,Opposition team ball recoveries
+aerials_won_against,Opposition team aerial duels won
+aerials_lost_against,Opposition team aerial duels conceded
+aerials_won_pct_against,Opposition team % of aerial duels won

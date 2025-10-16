@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * Prediction API Endpoint
+ * Receives match prediction requests and calls Python backend
+ */
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Only allow POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+// Read JSON input
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+
+// Validate input
+if (!$data) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+    exit;
+}
+
+$homeTeam = $data['home_team'] ?? null;
+$awayTeam = $data['away_team'] ?? null;
+$competition = $data['competition'] ?? 'premier_league';
+$modelType = $data['model_type'] ?? 'ensemble';
+
+// Validate required fields
+if (!$homeTeam || !$awayTeam) {
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Both home_team and away_team are required',
+        'received' => [
+            'home_team' => $homeTeam,
+            'away_team' => $awayTeam
+        ]
+    ]);
+    exit;
+}
+
+// Validate teams are different
+if ($homeTeam === $awayTeam) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Teams must be different']);
+    exit;
+}
+
+// Validate model type
+$validModels = ['xgboost', 'randomforest', 'ensemble'];
+if (!in_array($modelType, $validModels)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Invalid model type']);
+    exit;
+}
+
+// Path to Python script
+$pythonScript = __DIR__ . '/../../python_api/predict.py';
+$venvPython = '/var/www/html/pyethone/pye_venv/bin/python3';
+
+// Escape arguments
+$homeTeamEscaped = escapeshellarg($homeTeam);
+$awayTeamEscaped = escapeshellarg($awayTeam);
+$competitionEscaped = escapeshellarg($competition);
+$modelTypeEscaped = escapeshellarg($modelType);
+
+// Build command
+$command = sprintf(
+    '%s %s %s %s %s %s 2>&1',
+    $venvPython,
+    escapeshellarg($pythonScript),
+    $homeTeamEscaped,
+    $awayTeamEscaped,
+    $competitionEscaped,
+    $modelTypeEscaped
+);
+
+// Execute Python script
+$output = shell_exec($command);
+
+// Parse JSON response
+$result = json_decode($output, true);
+
+if ($result === null) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Failed to parse Python response',
+        'raw_output' => $output
+    ]);
+    exit;
+}
+
+// Add model_type to response if not present
+if (!isset($result['model_type'])) {
+    $result['model_type'] = $modelType;
+}
+
+// Return result
+echo json_encode($result);
