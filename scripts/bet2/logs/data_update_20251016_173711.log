@@ -1,0 +1,113 @@
+========================================
+Data Update Started: Thu Oct 16 17:37:11 EEST 2025
+========================================
+======================================================================
+Premier League 2025-2026 - Data Update Script
+Timestamp: 2025-10-16 17:37:15
+======================================================================
+✓ Found existing file: /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+  Existing data: 140 matches, 20 teams
+
+Starting incremental scrape...
+  Request delay: ~8s
+  Team delay: ~15s
+
+[1/20] 
+[Scraping Arsenal]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[2/20] 
+[Scraping Aston Villa]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[3/20] 
+[Scraping Bournemouth]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[4/20] 
+[Scraping Brentford]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[5/20] 
+[Scraping Brighton]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[6/20] 
+[Scraping Burnley]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[7/20] 
+[Scraping Chelsea]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[8/20] 
+[Scraping Crystal Palace]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[9/20] 
+[Scraping Everton]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[10/20] 
+[Scraping Fulham]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[11/20] 
+[Scraping Leeds United]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[12/20] 
+[Scraping Liverpool]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[13/20] 
+[Scraping Manchester City]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[14/20] 
+[Scraping Manchester Utd]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[15/20] 
+[Scraping Newcastle Utd]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[16/20] 
+[Scraping Nott'ham Forest]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[17/20] 
+[Scraping Sunderland]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[18/20] 
+[Scraping Tottenham]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[19/20] 
+[Scraping West Ham]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...
+  ✓ No new matches
+[20/20] 
+[Scraping Wolves]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
+  → Checking schedule for new matches...

@@ -126,18 +126,23 @@ class ModelTrainer:
         logger.info(f"Features: {len(feature_columns)}")
         logger.info(f"Class distribution: {dict(pd.Series(y_train).value_counts())}")
 
-        # Train XGBoost model
+        # Train XGBoost model with BETTER REGULARIZATION
         model = xgb.XGBClassifier(
             objective='multi:softprob',
             num_class=3,
             n_estimators=200,
-            max_depth=6,
-            learning_rate=0.1,
+            max_depth=4,  # REDUCED from 6 to prevent overfitting
+            learning_rate=0.05,  # REDUCED from 0.1 for better generalization
             subsample=0.8,
             colsample_bytree=0.8,
+            min_child_weight=3,  # ADDED regularization
+            gamma=0.1,  # ADDED regularization
+            reg_alpha=0.1,  # ADDED L1 regularization
+            reg_lambda=1.0,  # ADDED L2 regularization
             random_state=42,
             eval_metric='mlogloss'
         )
+
 
         # Train
         model.fit(
@@ -241,17 +246,22 @@ class ModelTrainer:
 
         logger.info(f"Over {threshold} - Positive: {y_train.sum()}, Negative: {len(y_train) - y_train.sum()}")
 
-        # Train XGBoost binary classifier
+        # Train XGBoost binary classifier with BETTER REGULARIZATION
         model = xgb.XGBClassifier(
             objective='binary:logistic',
             n_estimators=150,
-            max_depth=5,
-            learning_rate=0.1,
+            max_depth=4,  # REDUCED from 5
+            learning_rate=0.05,  # REDUCED from 0.1
             subsample=0.8,
             colsample_bytree=0.8,
+            min_child_weight=3,  # ADDED
+            gamma=0.1,  # ADDED
+            reg_alpha=0.1,  # ADDED
+            reg_lambda=1.0,  # ADDED
             random_state=42,
             eval_metric='logloss'
         )
+
 
         model.fit(
             X_train, y_train,
@@ -307,14 +317,19 @@ class ModelTrainer:
         X_train, y_train = self._prepare_btts_data(train_df, feature_columns)
         X_val, y_val = self._prepare_btts_data(val_df, feature_columns)
 
-        # Train model
+        # Train model with BETTER REGULARIZATION
         model = xgb.XGBClassifier(
             objective='binary:logistic',
             n_estimators=150,
-            max_depth=5,
-            learning_rate=0.1,
+            max_depth=4,  # REDUCED from 5
+            learning_rate=0.05,  # REDUCED from 0.1
+            min_child_weight=3,  # ADDED
+            gamma=0.1,  # ADDED
+            reg_alpha=0.1,  # ADDED
+            reg_lambda=1.0,  # ADDED
             random_state=42
         )
+
 
         model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
 

@@ -1,34 +1,31 @@
 """
-Feature Engineering Service
-Generates ~300 features for football match prediction
+Feature Engineering Service - ENHANCED v3.0
+Generates features with opponent context and xG intelligence
 
-This service creates features from historical match data while preventing data leakage
-by only using information available before each match.
-
-Feature Categories:
-1. Basic Features (20 features)
-2. Rolling Window Features (150+ features)
-3. Opponent Features (15 features)
-4. Head-to-Head Features (10 features)
-5. Differential Features (20 features)
-6. Contextual Features (5 features)
-7. Streak Features (6 features)
-8. Goal-Specific Features (40 features)
-9. Card-Specific Features (20 features)
+New Features:
+- Opponent features (mirrored from opponent's perspective)
+- Differential features (team - opponent)
+- xG intelligence (trends, over/underperformance)
+- Goal cross-features (BTTS, combined threat)
+- Recency weighting (recent games weighted more)
 """
 import pandas as pd
 import numpy as np
 import logging
+import warnings
 from typing import List, Dict, Optional
 from datetime import datetime, timedelta
+
+# Suppress pandas performance warnings
+warnings.filterwarnings('ignore', category=pd.errors.PerformanceWarning)
 
 logger = logging.getLogger(__name__)
 
 
 class FeatureEngineer:
     """
-    Generates features for football match prediction
-
+    Generates comprehensive features for football match prediction
+    
     Usage:
         engineer = FeatureEngineer(rolling_windows=[3, 5, 10])
         df_with_features = engineer.generate_features(df)
@@ -37,7 +34,7 @@ class FeatureEngineer:
     def __init__(self, rolling_windows: List[int] = [3, 5, 10]):
         """
         Initialize Feature Engineer
-
+        
         Args:
             rolling_windows: List of window sizes for rolling calculations
         """
@@ -47,14 +44,15 @@ class FeatureEngineer:
     def generate_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Generate all features for the dataset
-
+        
         Args:
-            df: DataFrame with match data (must have columns: team_name, date, opponent, venue, etc.)
-
+            df: DataFrame with match data
+            
         Returns:
             DataFrame with all features added
         """
-        logger.info("Starting feature generation...")
+        logger.info(
+            "Starting ENHANCED feature generation with opponent context...")
         logger.info(f"Input shape: {df.shape}")
 
         # Ensure chronological sorting
@@ -64,370 +62,608 @@ class FeatureEngineer:
         # Make a copy
         df = df.copy()
 
-        # Generate features by category
+        # Reset feature columns
+        self.feature_columns = []
+
+        # PHASE 1: Team-only features (existing)
+        logger.info("Phase 1: Generating team features...")
         df = self._add_basic_features(df)
         df = self._add_rolling_window_features(df)
-        df = self._add_opponent_features(df)
-        df = self._add_head_to_head_features(df)
-        df = self._add_differential_features(df)
         df = self._add_contextual_features(df)
         df = self._add_streak_features(df)
+        df = self._add_form_features(df)
         df = self._add_goal_specific_features(df)
-        df = self._add_card_specific_features(df)
+        df = self._add_defensive_features(df)
+        df = self._add_venue_specific_features(df)
 
-        logger.info(f"Feature generation complete. Total features added: {len(self.feature_columns)}")
+        # PHASE 2: xG Intelligence features (NEW)
+        logger.info("Phase 2: Generating xG intelligence features...")
+        df = self._add_xg_intelligence_features(df)
+
+        # PHASE 3: Opponent features (NEW)
+        logger.info("Phase 3: Generating opponent features...")
+        df = self._add_opponent_features(df)
+
+        # PHASE 4: Differential features (NEW)
+        logger.info("Phase 4: Generating differential features...")
+        df = self._add_differential_features(df)
+
+        # PHASE 5: Goal cross-features (NEW)
+        logger.info("Phase 5: Generating goal cross-features...")
+        df = self._add_goal_cross_features(df)
+
+        # PHASE 6: Cards features (NEW)
+        logger.info("Phase 6: Generating cards features...")
+        df = self._add_cards_features(df)
+
+        # Fill NaN values with 0
+        feature_cols = [
+            col for col in self.feature_columns if col in df.columns]
+        df[feature_cols] = df[feature_cols].fillna(0)
+
+        logger.info(
+            f"Feature generation complete. Total features: {len(self.feature_columns)}")
         logger.info(f"Output shape: {df.shape}")
 
         return df
 
     def _add_basic_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add basic derived features from raw data
-        ~20 features
-        """
+        """Add basic derived features (~25 features)"""
         logger.info("Adding basic features...")
 
-        # Points earned
         if 'result' in df.columns:
             df['points'] = df['result'].map({'W': 3, 'D': 1, 'L': 0})
             self.feature_columns.append('points')
 
-        # Goal difference
         if 'goals_for' in df.columns and 'goals_against' in df.columns:
             df['goal_diff'] = df['goals_for'] - df['goals_against']
             self.feature_columns.append('goal_diff')
 
-        # xG difference
         if 'xg_for' in df.columns and 'xg_against' in df.columns:
             df['xg_diff'] = df['xg_for'] - df['xg_against']
             self.feature_columns.append('xg_diff')
 
-        # Shot accuracy
         if 'shots_on_target' in df.columns and 'shots' in df.columns:
             df['shot_accuracy'] = df['shots_on_target'] / (df['shots'] + 0.01)
             self.feature_columns.append('shot_accuracy')
 
-        # Binary results
+        if 'goals_for' in df.columns and 'shots' in df.columns:
+            df['shots_conversion'] = df['goals_for'] / (df['shots'] + 0.01)
+            self.feature_columns.append('shots_conversion')
+
         if 'result' in df.columns:
             df['win'] = (df['result'] == 'W').astype(int)
             df['draw'] = (df['result'] == 'D').astype(int)
             df['loss'] = (df['result'] == 'L').astype(int)
             self.feature_columns.extend(['win', 'draw', 'loss'])
 
-        # Clean sheet
         if 'goals_against' in df.columns:
             df['clean_sheet'] = (df['goals_against'] == 0).astype(int)
             self.feature_columns.append('clean_sheet')
 
-        # Failed to score
         if 'goals_for' in df.columns:
             df['failed_to_score'] = (df['goals_for'] == 0).astype(int)
             self.feature_columns.append('failed_to_score')
 
-        # Both teams scored
         if 'goals_for' in df.columns and 'goals_against' in df.columns:
-            df['both_scored'] = ((df['goals_for'] > 0) & (df['goals_against'] > 0)).astype(int)
-            self.feature_columns.append('both_scored')
-
-        # Total goals
-        if 'goals_for' in df.columns and 'goals_against' in df.columns:
+            df['both_scored'] = ((df['goals_for'] > 0) & (
+                df['goals_against'] > 0)).astype(int)
             df['total_goals'] = df['goals_for'] + df['goals_against']
-            self.feature_columns.append('total_goals')
+            self.feature_columns.extend(['both_scored', 'total_goals'])
 
-        # Over/Under thresholds
         if 'total_goals' in df.columns:
             for threshold in [0.5, 1.5, 2.5, 3.5]:
                 col_name = f'over_{str(threshold).replace(".", "_")}'
                 df[col_name] = (df['total_goals'] > threshold).astype(int)
                 self.feature_columns.append(col_name)
 
-        # Expected goals performance vs actual
         if 'goals_for' in df.columns and 'xg_for' in df.columns:
             df['goals_vs_xg'] = df['goals_for'] - df['xg_for']
             self.feature_columns.append('goals_vs_xg')
 
-        # Shots conversion rate
-        if 'goals_for' in df.columns and 'shots' in df.columns:
-            df['shots_conversion'] = df['goals_for'] / (df['shots'] + 0.01)
-            self.feature_columns.append('shots_conversion')
-
-        logger.info(f"Added {len([c for c in self.feature_columns if c in df.columns])} basic features")
+        if 'shots_against' in df.columns and 'shots_on_target_against' in df.columns:
+            df['defensive_pressure'] = df['shots_against'] - \
+                df['shots_on_target_against']
+            self.feature_columns.append('defensive_pressure')
 
         return df
 
     def _add_rolling_window_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add rolling window features
-        ~150+ features
-        """
+        """Add rolling window features (~120 features)"""
         logger.info("Adding rolling window features...")
 
-        # Core statistics to calculate rolling averages for
         core_stats = [
             'points', 'goals_for', 'goals_against', 'goal_diff',
             'xg_for', 'xg_against', 'xg_diff',
             'shots', 'shots_on_target', 'possession',
-            'corners', 'fouls'
+            'shot_accuracy', 'shots_conversion'
         ]
 
-        # Advanced statistics
         advanced_stats = [
-            'sca', 'gca', 'passes', 'passes_completed_pct',
-            'progressive_passes', 'carries', 'tackles', 'interceptions',
-            'aerials_won', 'clearances', 'blocked_shots'
+            'sca', 'gca', 'interceptions', 'tackles_won',
+            'aerials_won', 'fouls', 'cards_yellow'
         ]
 
-        # Combine and filter to only columns that exist
         all_stats = core_stats + advanced_stats
         available_stats = [col for col in all_stats if col in df.columns]
 
-        logger.info(f"Found {len(available_stats)} statistics for rolling calculations")
-
-        # Calculate for each team
-        for team in df['team_name'].unique():
-            team_mask = df['team_name'] == team
-            team_indices = df[team_mask].index
-
-            # Overall rolling windows (all matches)
-            for window in self.rolling_windows:
-                for stat in available_stats:
-                    # Mean
-                    feature_name = f'{stat}_L{window}_mean'
-                    values = df.loc[team_mask, stat].shift(1).rolling(
-                        window=window, min_periods=1
-                    ).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    if feature_name not in self.feature_columns:
-                        self.feature_columns.append(feature_name)
-
-                    # Std (only for larger windows to reduce features)
-                    if window >= 5:
-                        feature_name = f'{stat}_L{window}_std'
-                        values = df.loc[team_mask, stat].shift(1).rolling(
-                            window=window, min_periods=2
-                        ).std()
-                        df.loc[team_indices, feature_name] = values.values
-                        if feature_name not in self.feature_columns:
-                            self.feature_columns.append(feature_name)
-
-            # Venue-specific rolling windows (Home/Away splits)
-            for venue in ['Home', 'Away']:
-                venue_team_mask = team_mask & (df['venue'] == venue)
-                venue_indices = df[venue_team_mask].index
-
-                # Only mean for venue-specific to control feature count
-                for window in self.rolling_windows:
-                    for stat in available_stats[:8]:  # Only core stats for venue
-                        feature_name = f'{stat}_{venue}_L{window}_mean'
-                        values = df.loc[venue_team_mask, stat].shift(1).rolling(
-                            window=window, min_periods=1
-                        ).mean()
-                        df.loc[venue_indices, feature_name] = values.values
-                        if feature_name not in self.feature_columns:
-                            self.feature_columns.append(feature_name)
-
-        # Season averages (expanding window)
-        df = self._add_season_averages(df, available_stats[:12])  # Top 12 stats
-
-        logger.info(f"Added rolling window features")
-
-        return df
-
-    def _add_season_averages(self, df: pd.DataFrame, stats: List[str]) -> pd.DataFrame:
-        """Add season-to-date averages"""
-
-        for team in df['team_name'].unique():
-            team_mask = df['team_name'] == team
-            team_indices = df[team_mask].index
-
-            for stat in stats:
-                if stat in df.columns:
-                    feature_name = f'{stat}_season_avg'
-                    values = df.loc[team_mask, stat].shift(1).expanding(min_periods=1).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    if feature_name not in self.feature_columns:
-                        self.feature_columns.append(feature_name)
-
-        return df
-
-    def _add_opponent_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add opponent strength features
-        ~15 features
-        """
-        logger.info("Adding opponent features...")
-
-        # Create opponent lookup dictionary for efficiency
-        opponent_stats = {}
-
-        for idx, row in df.iterrows():
-            team = row['team_name']
-            opponent = row['opponent']
-            match_date = row['date']
-
-            # Get opponent's latest stats before this match
-            opp_mask = (df['team_name'] == opponent) & (df['date'] < match_date)
-            opp_data = df[opp_mask]
-
-            if len(opp_data) > 0:
-                latest_opp = opp_data.iloc[-1]
-
-                # Opponent season averages
-                for stat in ['points_season_avg', 'goals_for_season_avg', 'goals_against_season_avg',
-                           'xg_for_season_avg', 'xg_against_season_avg']:
-                    if stat in latest_opp:
-                        feature_name = f'opp_{stat}'
-                        df.at[idx, feature_name] = latest_opp[stat]
-                        if feature_name not in self.feature_columns:
-                            self.feature_columns.append(feature_name)
-
-                # Opponent recent form (last 5 games)
-                if len(opp_data) >= 5:
-                    recent_opp = opp_data.tail(5)
-                    df.at[idx, 'opp_form_L5_points'] = recent_opp['points'].mean()
-                    df.at[idx, 'opp_form_L5_goals'] = recent_opp['goals_for'].mean()
-
-                    if 'opp_form_L5_points' not in self.feature_columns:
-                        self.feature_columns.extend(['opp_form_L5_points', 'opp_form_L5_goals'])
-
-        logger.info(f"Added opponent features")
-        return df
-
-    def _add_head_to_head_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add head-to-head features
-        ~10 features
-        """
-        logger.info("Adding head-to-head features...")
-
-        for idx, row in df.iterrows():
-            team = row['team_name']
-            opponent = row['opponent']
-            match_date = row['date']
-
-            # Find historical H2H matches
-            h2h_mask = (
-                ((df['team_name'] == team) & (df['opponent'] == opponent)) |
-                ((df['team_name'] == opponent) & (df['opponent'] == team))
-            ) & (df['date'] < match_date)
-
-            h2h_data = df[h2h_mask]
-
-            if len(h2h_data) > 0:
-                # From this team's perspective
-                team_h2h = h2h_data[h2h_data['team_name'] == team]
-
-                if len(team_h2h) > 0:
-                    # Last 5 H2H
-                    recent_h2h = team_h2h.tail(5)
-                    df.at[idx, 'h2h_points_L5'] = recent_h2h['points'].mean()
-                    df.at[idx, 'h2h_goals_for_L5'] = recent_h2h['goals_for'].mean()
-                    df.at[idx, 'h2h_goals_against_L5'] = recent_h2h['goals_against'].mean()
-
-                    # All-time H2H
-                    df.at[idx, 'h2h_win_rate'] = (team_h2h['result'] == 'W').mean()
-                    df.at[idx, 'h2h_matches'] = len(team_h2h)
-
-                    for feat in ['h2h_points_L5', 'h2h_goals_for_L5', 'h2h_goals_against_L5',
-                               'h2h_win_rate', 'h2h_matches']:
-                        if feat not in self.feature_columns:
-                            self.feature_columns.append(feat)
-
-        logger.info(f"Added head-to-head features")
-        return df
-
-    def _add_differential_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add differential features (team - opponent)
-        ~20 features
-        """
-        logger.info("Adding differential features...")
-
-        diff_pairs = [
-            ('points_season_avg', 'opp_points_season_avg'),
-            ('goals_for_season_avg', 'opp_goals_for_season_avg'),
-            ('goals_against_season_avg', 'opp_goals_against_season_avg'),
-            ('xg_for_season_avg', 'opp_xg_for_season_avg'),
-            ('xg_against_season_avg', 'opp_xg_against_season_avg'),
-        ]
-
-        for team_stat, opp_stat in diff_pairs:
-            if team_stat in df.columns and opp_stat in df.columns:
-                feature_name = f'diff_{team_stat.replace("_season_avg", "")}'
-                df[feature_name] = df[team_stat] - df[opp_stat]
+        for window in self.rolling_windows:
+            for stat in available_stats:
+                # Mean
+                feature_name = f'{stat}_L{window}_mean'
+                df[feature_name] = df.groupby('team_name')[stat].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
                 self.feature_columns.append(feature_name)
 
-        logger.info(f"Added differential features")
+                # Std (only for larger windows)
+                if window >= 5:
+                    feature_name = f'{stat}_L{window}_std'
+                    df[feature_name] = df.groupby('team_name')[stat].transform(
+                        lambda x: x.shift(1).rolling(
+                            window=window, min_periods=2).std()
+                    )
+                    self.feature_columns.append(feature_name)
+
+        # Season averages
+        for stat in available_stats[:10]:
+            feature_name = f'{stat}_season_avg'
+            df[feature_name] = df.groupby('team_name')[stat].transform(
+                lambda x: x.shift(1).expanding(min_periods=1).mean()
+            )
+            self.feature_columns.append(feature_name)
+
         return df
 
     def _add_contextual_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add contextual features
-        ~5 features
-        """
+        """Add contextual features (~5 features)"""
         logger.info("Adding contextual features...")
 
-        # Venue encoding
         if 'venue' in df.columns:
             df['is_home'] = (df['venue'] == 'Home').astype(int)
             self.feature_columns.append('is_home')
 
-        # Day of week
         if 'dayofweek' in df.columns:
             df['is_weekend'] = df['dayofweek'].isin(['Sat', 'Sun']).astype(int)
             self.feature_columns.append('is_weekend')
 
-        # Rest days (if we have dates)
         if 'date' in df.columns:
-            for team in df['team_name'].unique():
-                team_mask = df['team_name'] == team
-                team_dates = pd.to_datetime(df.loc[team_mask, 'date'])
-                rest_days = team_dates.diff().dt.days
-                df.loc[team_mask, 'rest_days'] = rest_days
-
+            df['date_parsed'] = pd.to_datetime(df['date'])
+            df['rest_days'] = df.groupby('team_name')[
+                'date_parsed'].diff().dt.days
+            df['rest_days'] = df['rest_days'].clip(
+                upper=30)  # Cap extreme values
+            df.drop('date_parsed', axis=1, inplace=True)
             self.feature_columns.append('rest_days')
 
-        logger.info(f"Added contextual features")
+        df['match_number'] = df.groupby('team_name').cumcount() + 1
+        self.feature_columns.append('match_number')
+
         return df
 
     def _add_streak_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add streak features
-        ~6 features
-        """
+        """Add streak features (~8 features)"""
         logger.info("Adding streak features...")
 
-        for team in df['team_name'].unique():
-            team_mask = df['team_name'] == team
-            team_indices = df[team_mask].index
-            team_data = df[team_mask].copy()
+        df['win_streak'] = df.groupby('team_name')['result'].transform(
+            lambda x: self._calculate_streak_series(x.shift(1), 'W')
+        )
+        self.feature_columns.append('win_streak')
 
-            # Win streak
-            win_streak = self._calculate_streak(team_data['result'].shift(1), 'W')
-            df.loc[team_indices, 'win_streak'] = win_streak.values
+        df['loss_streak'] = df.groupby('team_name')['result'].transform(
+            lambda x: self._calculate_streak_series(x.shift(1), 'L')
+        )
+        self.feature_columns.append('loss_streak')
 
-            # Unbeaten streak (W or D)
-            unbeaten = (team_data['result'].shift(1).isin(['W', 'D'])).astype(int)
-            unbeaten_streak = self._calculate_consecutive(unbeaten)
-            df.loc[team_indices, 'unbeaten_streak'] = unbeaten_streak.values
+        df['_unbeaten_temp'] = df['result'].isin(['W', 'D']).astype(int)
+        df['unbeaten_streak'] = df.groupby('team_name')['_unbeaten_temp'].transform(
+            lambda x: self._calculate_consecutive_series(x.shift(1))
+        )
+        df.drop('_unbeaten_temp', axis=1, inplace=True)
+        self.feature_columns.append('unbeaten_streak')
 
-            # Scoring streak
-            scoring = (team_data['goals_for'].shift(1) > 0).astype(int)
-            scoring_streak = self._calculate_consecutive(scoring)
-            df.loc[team_indices, 'scoring_streak'] = scoring_streak.values
+        if 'goals_for' in df.columns:
+            df['_scoring_temp'] = (df['goals_for'] > 0).astype(int)
+            df['scoring_streak'] = df.groupby('team_name')['_scoring_temp'].transform(
+                lambda x: self._calculate_consecutive_series(x.shift(1))
+            )
+            df.drop('_scoring_temp', axis=1, inplace=True)
+            self.feature_columns.append('scoring_streak')
 
-            # Clean sheet streak
-            clean_sheet = (team_data['goals_against'].shift(1) == 0).astype(int)
-            clean_sheet_streak = self._calculate_consecutive(clean_sheet)
-            df.loc[team_indices, 'clean_sheet_streak'] = clean_sheet_streak.values
+        if 'goals_against' in df.columns:
+            df['_cs_temp'] = (df['goals_against'] == 0).astype(int)
+            df['clean_sheet_streak'] = df.groupby('team_name')['_cs_temp'].transform(
+                lambda x: self._calculate_consecutive_series(x.shift(1))
+            )
+            df.drop('_cs_temp', axis=1, inplace=True)
+            self.feature_columns.append('clean_sheet_streak')
 
-        self.feature_columns.extend(['win_streak', 'unbeaten_streak', 'scoring_streak', 'clean_sheet_streak'])
+        df['games_since_win'] = df.groupby('team_name')['result'].transform(
+            lambda x: self._calculate_games_since_series(x.shift(1), 'W')
+        )
+        self.feature_columns.append('games_since_win')
 
-        logger.info(f"Added streak features")
         return df
 
+    def _add_form_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add form-based features (~15 features)"""
+        logger.info("Adding form features...")
+
+        for window in [3, 5]:
+            feature_name = f'form_L{window}_ppg'
+            df[feature_name] = df.groupby('team_name')['points'].transform(
+                lambda x: x.shift(1).rolling(
+                    window=window, min_periods=1).mean()
+            )
+            self.feature_columns.append(feature_name)
+
+        for window in [5, 10]:
+            feature_name = f'win_rate_L{window}'
+            df[feature_name] = df.groupby('team_name')['win'].transform(
+                lambda x: x.shift(1).rolling(
+                    window=window, min_periods=1).mean()
+            )
+            self.feature_columns.append(feature_name)
+
+        if 'goals_for' in df.columns:
+            for window in [5]:
+                feature_name = f'gf_momentum_L{window}'
+                df[f'_gf_recent_{window}'] = df.groupby('team_name')['goals_for'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[f'_gf_longer_{window}'] = df.groupby('team_name')['goals_for'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window*2, min_periods=1).mean()
+                )
+                df[feature_name] = df[f'_gf_recent_{window}'] - \
+                    df[f'_gf_longer_{window}']
+                df.drop(
+                    [f'_gf_recent_{window}', f'_gf_longer_{window}'], axis=1, inplace=True)
+                self.feature_columns.append(feature_name)
+
+        if 'goals_against' in df.columns:
+            for window in [5]:
+                feature_name = f'ga_momentum_L{window}'
+                df[f'_ga_recent_{window}'] = df.groupby('team_name')['goals_against'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[f'_ga_longer_{window}'] = df.groupby('team_name')['goals_against'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window*2, min_periods=1).mean()
+                )
+                df[feature_name] = df[f'_ga_recent_{window}'] - \
+                    df[f'_ga_longer_{window}']
+                df.drop(
+                    [f'_ga_recent_{window}', f'_ga_longer_{window}'], axis=1, inplace=True)
+                self.feature_columns.append(feature_name)
+
+        return df
+
+    def _add_goal_specific_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add goal-specific features (~40 features)"""
+        logger.info("Adding goal-specific features...")
+
+        for window in [5, 10]:
+            for threshold in [0.5, 1.5, 2.5, 3.5]:
+                col_name = f'over_{str(threshold).replace(".", "_")}'
+                if col_name in df.columns:
+                    feature_name = f'pct_over_{str(threshold).replace(".", "_")}_L{window}'
+                    df[feature_name] = df.groupby('team_name')[col_name].transform(
+                        lambda x: x.shift(1).rolling(
+                            window=window, min_periods=1).mean()
+                    )
+                    self.feature_columns.append(feature_name)
+
+        if 'both_scored' in df.columns:
+            for window in [5, 10]:
+                feature_name = f'pct_btts_L{window}'
+                df[feature_name] = df.groupby('team_name')['both_scored'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+        if 'clean_sheet' in df.columns:
+            for window in [5, 10]:
+                feature_name = f'clean_sheet_rate_L{window}'
+                df[feature_name] = df.groupby('team_name')['clean_sheet'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+        if 'failed_to_score' in df.columns:
+            for window in [5, 10]:
+                feature_name = f'failed_to_score_rate_L{window}'
+                df[feature_name] = df.groupby('team_name')['failed_to_score'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+        return df
+
+    def _add_defensive_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add defensive metrics (~20 features)"""
+        logger.info("Adding defensive features...")
+
+        defensive_stats = [
+            'shots_against', 'shots_on_target_against', 'xg_against',
+            'interceptions', 'tackles_won', 'aerials_won'
+        ]
+
+        available_defensive = [
+            col for col in defensive_stats if col in df.columns]
+
+        for window in [5, 10]:
+            for stat in available_defensive:
+                feature_name = f'{stat}_defensive_L{window}_mean'
+                df[feature_name] = df.groupby('team_name')[stat].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+        return df
+
+    def _add_venue_specific_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add venue-specific rolling features (~40 features)"""
+        logger.info("Adding venue-specific features...")
+
+        venue_stats = ['points', 'goals_for', 'goals_against', 'win']
+
+        for venue in ['Home', 'Away']:
+            venue_df = df[df['venue'] == venue].copy()
+
+            for window in [3, 5]:
+                for stat in venue_stats:
+                    if stat in df.columns:
+                        feature_name = f'{stat}_{venue}_L{window}_mean'
+                        venue_df[feature_name] = venue_df.groupby('team_name')[stat].transform(
+                            lambda x: x.shift(1).rolling(
+                                window=window, min_periods=1).mean()
+                        )
+                        if feature_name not in df.columns:
+                            df[feature_name] = np.nan
+                        df.loc[venue_df.index,
+                               feature_name] = venue_df[feature_name]
+
+                        if feature_name not in self.feature_columns:
+                            self.feature_columns.append(feature_name)
+
+        return df
+
+    def _add_xg_intelligence_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add xG intelligence features (NEW - ~30 features)
+        These capture finishing quality, chance creation trends, and form trajectory
+        """
+        logger.info("Adding xG intelligence features...")
+
+        if 'goals_for' in df.columns and 'xg_for' in df.columns:
+            # xG Overperformance (finishing above expected)
+            for window in [3, 5, 10]:
+                feature_name = f'xg_overperf_L{window}'
+                df[f'_gf_L{window}'] = df.groupby('team_name')['goals_for'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[f'_xgf_L{window}'] = df.groupby('team_name')['xg_for'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[feature_name] = df[f'_gf_L{window}'] - df[f'_xgf_L{window}']
+                df.drop([f'_gf_L{window}', f'_xgf_L{window}'],
+                        axis=1, inplace=True)
+                self.feature_columns.append(feature_name)
+
+        if 'xg_for' in df.columns:
+            # xG Attacking Trend (are chances increasing?)
+            feature_name = 'xg_for_momentum'
+            df['_xg_for_L3'] = df.groupby('team_name')['xg_for'].transform(
+                lambda x: x.shift(1).rolling(window=3, min_periods=1).mean()
+            )
+            df['_xg_for_L10'] = df.groupby('team_name')['xg_for'].transform(
+                lambda x: x.shift(1).rolling(window=10, min_periods=1).mean()
+            )
+            df[feature_name] = (df['_xg_for_L3'] -
+                                df['_xg_for_L10']) / (df['_xg_for_L10'] + 0.01)
+            df.drop(['_xg_for_L3', '_xg_for_L10'], axis=1, inplace=True)
+            self.feature_columns.append(feature_name)
+
+        if 'goals_against' in df.columns and 'xg_against' in df.columns:
+            # Defensive xG Gap (keeper/defense performing vs expected)
+            for window in [3, 5]:
+                feature_name = f'xg_def_gap_L{window}'
+                df[f'_ga_L{window}'] = df.groupby('team_name')['goals_against'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[f'_xga_L{window}'] = df.groupby('team_name')['xg_against'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                df[feature_name] = df[f'_ga_L{window}'] - df[f'_xga_L{window}']
+                df.drop([f'_ga_L{window}', f'_xga_L{window}'],
+                        axis=1, inplace=True)
+                self.feature_columns.append(feature_name)
+
+        if 'xg_against' in df.columns:
+            # xG Defensive Trend (are chances conceded increasing?)
+            feature_name = 'xg_against_momentum'
+            df['_xg_against_L3'] = df.groupby('team_name')['xg_against'].transform(
+                lambda x: x.shift(1).rolling(window=3, min_periods=1).mean()
+            )
+            df['_xg_against_L10'] = df.groupby('team_name')['xg_against'].transform(
+                lambda x: x.shift(1).rolling(window=10, min_periods=1).mean()
+            )
+            df[feature_name] = (
+                df['_xg_against_L3'] - df['_xg_against_L10']) / (df['_xg_against_L10'] + 0.01)
+            df.drop(['_xg_against_L3', '_xg_against_L10'],
+                    axis=1, inplace=True)
+            self.feature_columns.append(feature_name)
+
+        logger.info("Added xG intelligence features")
+        return df
+
+    def _add_opponent_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add opponent features (NEW - ~100 features)
+        Mirror of key team features from opponent's perspective
+        """
+        logger.info("Adding opponent features...")
+
+        # Key features to mirror for opponent
+        key_features = [
+            'goals_for_L3_mean', 'goals_for_L5_mean',
+            'goals_against_L3_mean', 'goals_against_L5_mean',
+            'xg_for_L3_mean', 'xg_for_L5_mean',
+            'xg_against_L3_mean', 'xg_against_L5_mean',
+            'points_L3_mean', 'points_L5_mean',
+            'form_L3_ppg', 'form_L5_ppg',
+            'win_rate_L5', 'win_rate_L10',
+            'xg_overperf_L3', 'xg_overperf_L5',
+            'xg_for_momentum', 'xg_against_momentum',
+            'pct_btts_L5', 'pct_over_2_5_L5',
+            'clean_sheet_rate_L5', 'failed_to_score_rate_L5'
+        ]
+
+        # Filter to only features that exist
+        available_features = [f for f in key_features if f in df.columns]
+
+        # For each match, get opponent's stats
+        for feature in available_features:
+            opp_feature_name = f'opp_{feature}'
+
+            # Create mapping: for each (team, date), get opponent's feature value
+            opponent_map = df.set_index(['opponent', 'date'])[feature]
+
+            # Map opponent's feature to current row
+            df[opp_feature_name] = df.apply(
+                lambda row: opponent_map.get(
+                    (row['team_name'], row['date']), 0),
+                axis=1
+            )
+
+            self.feature_columns.append(opp_feature_name)
+
+        logger.info(f"Added {len(available_features)} opponent features")
+        return df
+
+    def _add_differential_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add differential features (NEW - ~50 features)
+        Team stats - Opponent stats = Relative strength
+        """
+        logger.info("Adding differential features...")
+
+        # Features to create differentials for
+        diff_features = [
+            'goals_for_L5_mean', 'goals_against_L5_mean',
+            'xg_for_L5_mean', 'xg_against_L5_mean',
+            'points_L5_mean', 'form_L5_ppg',
+            'win_rate_L5', 'xg_overperf_L5',
+            'pct_btts_L5', 'clean_sheet_rate_L5'
+        ]
+
+        for feature in diff_features:
+            if feature in df.columns and f'opp_{feature}' in df.columns:
+                diff_name = f'diff_{feature}'
+                df[diff_name] = df[feature] - df[f'opp_{feature}']
+                self.feature_columns.append(diff_name)
+
+        logger.info("Added differential features")
+        return df
+
+    def _add_goal_cross_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add goal cross-features (NEW - ~20 features)
+        Features that combine team + opponent for goal predictions
+        """
+        logger.info("Adding goal cross-features...")
+
+        # Combined goal threat (both teams' attacking)
+        if 'goals_for_L5_mean' in df.columns and 'opp_goals_for_L5_mean' in df.columns:
+            df['combined_goal_threat'] = (
+                df['goals_for_L5_mean'] + df['opp_goals_for_L5_mean']) / 2
+            self.feature_columns.append('combined_goal_threat')
+
+        # Combined defensive weakness (both teams' defending)
+        if 'goals_against_L5_mean' in df.columns and 'opp_goals_against_L5_mean' in df.columns:
+            df['combined_def_weakness'] = (
+                df['goals_against_L5_mean'] + df['opp_goals_against_L5_mean']) / 2
+            self.feature_columns.append('combined_def_weakness')
+
+        # BTTS likelihood index
+        if all(col in df.columns for col in ['goals_for_L5_mean', 'opp_goals_for_L5_mean',
+                                             'goals_against_L5_mean', 'opp_goals_against_L5_mean']):
+            df['btts_likelihood'] = (
+                (df['goals_for_L5_mean'] * df['opp_goals_against_L5_mean']) +
+                (df['opp_goals_for_L5_mean'] * df['goals_against_L5_mean'])
+            ) / 2
+            self.feature_columns.append('btts_likelihood')
+
+        # Total goals expected (team scoring + opponent scoring)
+        if 'goals_for_L5_mean' in df.columns and 'opp_goals_for_L5_mean' in df.columns:
+            df['total_goals_expected'] = df['goals_for_L5_mean'] + \
+                df['opp_goals_for_L5_mean']
+            self.feature_columns.append('total_goals_expected')
+
+        # xG-based total expected
+        if 'xg_for_L5_mean' in df.columns and 'opp_xg_for_L5_mean' in df.columns:
+            df['xg_total_expected'] = df['xg_for_L5_mean'] + \
+                df['opp_xg_for_L5_mean']
+            self.feature_columns.append('xg_total_expected')
+
+        logger.info("Added goal cross-features")
+        return df
+
+    def _add_cards_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add cards-specific features (~15 features)"""
+        logger.info("Adding cards features...")
+
+        # Total cards (yellow + red)
+        if all(col in df.columns for col in ['cards_yellow', 'cards_red']):
+            df['total_cards'] = df['cards_yellow'] + df['cards_red']
+            df['total_cards_against'] = df['cards_yellow_against'] + \
+                df['cards_red_against']
+
+        # Cards rolling averages
+        for window in [5, 10]:
+            if 'total_cards' in df.columns:
+                # Cards received by team
+                feature_name = f'cards_L{window}_mean'
+                df[feature_name] = df.groupby('team_name')['total_cards'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+                # Cards drawn (opponent receives)
+                feature_name = f'cards_drawn_L{window}_mean'
+                df[feature_name] = df.groupby('team_name')['total_cards_against'].transform(
+                    lambda x: x.shift(1).rolling(
+                        window=window, min_periods=1).mean()
+                )
+                self.feature_columns.append(feature_name)
+
+        # Cards trend (increasing/decreasing discipline)
+        if 'total_cards' in df.columns:
+            df['cards_trend'] = df.groupby('team_name')['total_cards'].transform(
+                lambda x: x.shift(1).rolling(window=3, min_periods=1).mean() -
+                x.shift(1).rolling(window=10, min_periods=1).mean()
+            )
+            self.feature_columns.append('cards_trend')
+
+        logger.info(f"Added cards features")
+        return df
+
+
     @staticmethod
-    def _calculate_streak(series, value):
+    def _calculate_streak_series(series, value):
         """Calculate current streak of a specific value"""
         streak = []
         current = 0
@@ -442,7 +678,7 @@ class FeatureEngineer:
         return pd.Series(streak, index=series.index)
 
     @staticmethod
-    def _calculate_consecutive(series):
+    def _calculate_consecutive_series(series):
         """Calculate consecutive 1s in binary series"""
         streak = []
         current = 0
@@ -456,96 +692,20 @@ class FeatureEngineer:
             streak.append(current)
         return pd.Series(streak, index=series.index)
 
-    def _add_goal_specific_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add goal-specific features for O/U predictions
-        ~40 features
-        """
-        logger.info("Adding goal-specific features...")
-
-        for team in df['team_name'].unique():
-            team_mask = df['team_name'] == team
-            team_indices = df[team_mask].index
-            team_data = df[team_mask].copy()
-
-            # Over/Under percentages (last N games)
-            for window in [5, 10]:
-                for threshold in [0.5, 1.5, 2.5, 3.5]:
-                    col_name = f'over_{str(threshold).replace(".", "_")}'
-                    if col_name in team_data.columns:
-                        feature_name = f'pct_over_{str(threshold).replace(".", "_")}_L{window}'
-                        values = team_data[col_name].shift(1).rolling(
-                            window=window, min_periods=1
-                        ).mean()
-                        df.loc[team_indices, feature_name] = values.values
-                        self.feature_columns.append(feature_name)
-
-            # BTTS percentage
-            if 'both_scored' in team_data.columns:
-                for window in [5, 10]:
-                    feature_name = f'pct_btts_L{window}'
-                    values = team_data['both_scored'].shift(1).rolling(
-                        window=window, min_periods=1
-                    ).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    self.feature_columns.append(feature_name)
-
-            # Goals scored/conceded distribution
-            for window in [10]:
-                # Percentage of games with 0, 1, 2, 3+ goals scored
-                for goals in [0, 1, 2]:
-                    feature_name = f'pct_{goals}_goals_scored_L{window}'
-                    goals_match = (team_data['goals_for'].shift(1) == goals).astype(int)
-                    values = goals_match.rolling(window=window, min_periods=1).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    self.feature_columns.append(feature_name)
-
-        logger.info(f"Added goal-specific features")
-        return df
-
-    def _add_card_specific_features(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Add card-specific features
-        ~20 features
-        """
-        logger.info("Adding card-specific features...")
-
-        # Check if card columns exist
-        card_cols = ['cards_yellow', 'cards_red', 'cards_yellow_against', 'cards_red_against']
-        available_card_cols = [col for col in card_cols if col in df.columns]
-
-        if len(available_card_cols) == 0:
-            logger.warning("No card columns found, skipping card features")
-            return df
-
-        for team in df['team_name'].unique():
-            team_mask = df['team_name'] == team
-            team_indices = df[team_mask].index
-            team_data = df[team_mask].copy()
-
-            # Card averages
-            for window in [5, 10]:
-                for card_col in available_card_cols:
-                    feature_name = f'{card_col}_L{window}_mean'
-                    values = team_data[card_col].shift(1).rolling(
-                        window=window, min_periods=1
-                    ).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    self.feature_columns.append(feature_name)
-
-            # Total cards per match
-            if 'yellow_cards' in df.columns and 'red_cards' in df.columns:
-                team_data['total_cards_match'] = team_data['cards_yellow'] + team_data['cards_red']
-                for window in [5, 10]:
-                    feature_name = f'total_cards_L{window}_mean'
-                    values = team_data['total_cards_match'].shift(1).rolling(
-                        window=window, min_periods=1
-                    ).mean()
-                    df.loc[team_indices, feature_name] = values.values
-                    self.feature_columns.append(feature_name)
-
-        logger.info(f"Added card-specific features")
-        return df
+    @staticmethod
+    def _calculate_games_since_series(series, value):
+        """Calculate games since last occurrence of value"""
+        games_since = []
+        count = 0
+        for val in series:
+            if pd.isna(val):
+                count += 1
+            elif val == value:
+                count = 0
+            else:
+                count += 1
+            games_since.append(count)
+        return pd.Series(games_since, index=series.index)
 
     def get_feature_names(self) -> List[str]:
         """Return list of all generated feature names"""
@@ -554,3 +714,20 @@ class FeatureEngineer:
     def get_feature_count(self) -> int:
         """Return total number of features generated"""
         return len(self.feature_columns)
+
+    def get_model_feature_names(self) -> List[str]:
+        """
+        Return only features safe for modeling (exclude data leakage features)
+        
+        Excludes:
+        - Raw match outcomes (points, win, draw, loss, result indicators)
+        - Single-match stats (goal_diff, goals_vs_xg from current match)
+        """
+        excluded_features = {
+            'points', 'goal_diff', 'xg_diff', 'win', 'draw', 'loss',
+            'clean_sheet', 'failed_to_score', 'both_scored', 'total_goals',
+            'over_0_5', 'over_1_5', 'over_2_5', 'over_3_5',
+            'goals_vs_xg', 'defensive_pressure', 'shot_accuracy', 'shots_conversion'
+        }
+        
+        return [f for f in self.feature_columns if f not in excluded_features]

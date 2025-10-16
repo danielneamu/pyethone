@@ -35,3 +35,10 @@ CORRELATION_THRESHOLD = 0.95
 
 # Ensure directories exist
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Model Configuration
+MODEL_TYPE = 'ensemble'  # Options: 'xgboost', 'randomforest', 'ensemble'
+ENSEMBLE_WEIGHTS = {
+    'xgboost': 0.4,
+    'randomforest': 0.6
+}
