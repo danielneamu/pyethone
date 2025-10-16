@@ -42,3 +42,42 @@ ENSEMBLE_WEIGHTS = {
     'xgboost': 0.4,
     'randomforest': 0.6
 }
+
+# Model Hyperparameters
+MODEL_PARAMS = {
+    'xgboost': {
+        'match_result': {
+            'objective': 'multi:softprob',
+            'num_class': 3,
+            'n_estimators': 150,
+            'max_depth': 5,
+            'learning_rate': 0.05,
+            'subsample': 0.8,
+            'colsample_bytree': 0.8,
+            'random_state': 42
+        },
+        'binary': {  # For goals/cards
+            'objective': 'binary:logistic',
+            'n_estimators': 100,
+            'max_depth': 4,
+            'learning_rate': 0.05,
+            'random_state': 42
+        }
+    },
+    'randomforest': {
+        'match_result': {
+            'n_estimators': 200,
+            'max_depth': 12,  # Use the better one
+            'min_samples_split': 10,
+            'min_samples_leaf': 5,
+            'random_state': 42,
+            'n_jobs': -1
+        },
+        'binary': {  # For goals/cards
+            'n_estimators': 100,
+            'max_depth': 10,
+            'random_state': 42,
+            'n_jobs': -1
+        }
+    }
+}

@@ -14,6 +14,8 @@ import pandas as pd
 import sys
 import logging
 from pathlib import Path
+from config import MODEL_PARAMS
+
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -102,12 +104,14 @@ def main():
         xgb_acc = accuracy_score(y_val, xgb_model.predict(X_val))
 
         # Random Forest
-        rf_model = RandomForestClassifier(
-            n_estimators=100,
-            max_depth=10,
-            random_state=42,
-            n_jobs=-1
-        )
+        #rf_model = RandomForestClassifier(
+        #    n_estimators=100,
+        #    max_depth=10,
+        #    random_state=42,
+        #    n_jobs=-1
+        #)
+
+        rf_model = RandomForestClassifier(**MODEL_PARAMS['randomforest']['binary'])
         rf_model.fit(X_train, y_train)
         rf_acc = accuracy_score(y_val, rf_model.predict(X_val))
 
@@ -142,12 +146,14 @@ def main():
         xgb_acc = accuracy_score(y_val, xgb_model.predict(X_val))
 
         # Random Forest
-        rf_model = RandomForestClassifier(
-            n_estimators=100,
-            max_depth=10,
-            random_state=42,
-            n_jobs=-1
-        )
+        #rf_model = RandomForestClassifier(
+        #    n_estimators=100,
+        #    max_depth=10,
+        #    random_state=42,
+        #    n_jobs=-1
+        #)
+
+        rf_model = RandomForestClassifier(**MODEL_PARAMS['randomforest']['binary'])
         rf_model.fit(X_train, y_train)
         rf_acc = accuracy_score(y_val, rf_model.predict(X_val))
 

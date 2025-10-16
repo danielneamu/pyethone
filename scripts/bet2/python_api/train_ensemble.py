@@ -14,6 +14,8 @@ import pandas as pd
 import sys
 import logging
 from pathlib import Path
+from config import MODEL_PARAMS
+
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -99,15 +101,17 @@ def main():
 
     # Random Forest
     logger.info("Training Random Forest...")
-    rf_model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=15,
-        min_samples_split=10,
-        min_samples_leaf=5,
-        max_features='sqrt',
-        random_state=42,
-        n_jobs=-1
-    )
+    #rf_model = RandomForestClassifier(
+    #    n_estimators=200,
+    #    max_depth=15,
+    #    min_samples_split=10,
+    #    min_samples_leaf=5,
+    #    max_features='sqrt',
+    #    random_state=42,
+    #    n_jobs=-1
+    #)
+
+    rf_model = RandomForestClassifier(**MODEL_PARAMS['randomforest']['match_result'])
     rf_model.fit(X_train, y_train)
 
     rf_pred = rf_model.predict(X_val)
@@ -175,14 +179,16 @@ def main():
         xgb_acc_g = accuracy_score(y_val_goals, xgb_goals.predict(X_val))
 
         # Random Forest
-        rf_goals = RandomForestClassifier(
-            n_estimators=150,
-            max_depth=12,
-            min_samples_split=10,
-            min_samples_leaf=5,
-            random_state=42,
-            n_jobs=-1
-        )
+        #rf_goals = RandomForestClassifier(
+        #    n_estimators=150,
+        #    max_depth=12,
+        #    min_samples_split=10,
+        #    min_samples_leaf=5,
+        #    random_state=42,
+        #    n_jobs=-1
+        #)
+
+        rf_goals = RandomForestClassifier(**MODEL_PARAMS['randomforest']['binary'])
         rf_goals.fit(X_train, y_train_goals)
         rf_acc_g = accuracy_score(y_val_goals, rf_goals.predict(X_val))
 
@@ -218,14 +224,16 @@ def main():
         xgb_acc_btts = accuracy_score(y_val_btts, xgb_btts.predict(X_val))
 
         # Random Forest
-        rf_btts = RandomForestClassifier(
-            n_estimators=150,
-            max_depth=12,
-            min_samples_split=10,
-            min_samples_leaf=5,
-            random_state=42,
-            n_jobs=-1
-        )
+        #rf_btts = RandomForestClassifier(
+        #    n_estimators=150,
+        #    max_depth=12,
+        #    min_samples_split=10,
+        #    min_samples_leaf=5,
+        #    random_state=42,
+        #    n_jobs=-1
+        #)
+
+        rf_btts = RandomForestClassifier(**MODEL_PARAMS['randomforest']['binary'])
         rf_btts.fit(X_train, y_train_btts)
         rf_acc_btts = accuracy_score(y_val_btts, rf_btts.predict(X_val))
 
