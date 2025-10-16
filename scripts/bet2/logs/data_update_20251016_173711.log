@@ -111,3 +111,11 @@ Starting incremental scrape...
 [Scraping Wolves]
   Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7']
   → Checking schedule for new matches...
+  ✓ No new matches
+
+✓ No new data. All teams up to date!
+
+========================================
+Data Update Finished: Thu Oct 16 17:40:56 EEST 2025
+Exit Code: 0
+========================================
