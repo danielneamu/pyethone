@@ -3,15 +3,20 @@ Prediction Module
 Loads trained models and generates predictions for new matchups
 """
 
-from models.feature_engineering import FeatureEngineer
-from config.config import *
 import pandas as pd
 import numpy as np
 import pickle
 import os
 import json
 import sys
+
+# ADD PATH FIRST - BEFORE ANY PROJECT IMPORTS
 sys.path.append('/var/www/html/pyethone/scripts/bet')
+
+# NOW import project modules
+from config.config import *
+from models.feature_engineering import FeatureEngineer
+
 
 
 class MatchPredictor:
@@ -69,6 +74,13 @@ class MatchPredictor:
             home_team, current_date, 'all')
         away_overall = self.engineer._calculate_team_form(
             away_team, current_date, 'all')
+
+        # Calculate odds performance
+        home_odds_perf = self.engineer._calculate_odds_performance(
+            home_team, current_date, 'home')
+        away_odds_perf = self.engineer._calculate_odds_performance(
+            away_team, current_date, 'away')
+
         h2h = self.engineer._calculate_h2h(home_team, away_team, current_date)
 
         # Use average referee stats (no specific referee for prediction)
@@ -77,38 +89,58 @@ class MatchPredictor:
             'ref_avg_red': 0.2
         }
 
-        # Get latest odds (use neutral 33/33/33 if not available)
-        latest_match = self.matches_df.tail(1).iloc[0]
-        odds_home = latest_match.get('AvgH', 3.0)
-        odds_draw = latest_match.get('AvgD', 3.0)
-        odds_away = latest_match.get('AvgA', 3.0)
-        odds_over25 = latest_match.get('Avg>2.5', 2.0)
+        # Calculate matchup-specific features
+        expected_home_goals = (home_form['attack_strength'] *
+                               away_form['defense_strength'] *
+                               self.engineer.league_avg_home_goals)
+        expected_away_goals = (away_form['attack_strength'] *
+                               home_form['defense_strength'] *
+                               self.engineer.league_avg_away_goals)
 
-        # Build feature dictionary
+        # Build feature dictionary (must match training features exactly)
         features = {
             'home_form_win_rate': home_form['win_rate'],
             'home_form_draw_rate': home_form['draw_rate'],
             'home_form_goals_scored': home_form['goals_per_match'],
             'home_form_goals_conceded': home_form['goals_conceded_per_match'],
+            'home_form_clean_sheet_rate': home_form['clean_sheet_rate'],
+            'home_attack_strength': home_form['attack_strength'],
+            'home_defense_strength': home_form['defense_strength'],
+
             'away_form_win_rate': away_form['win_rate'],
             'away_form_draw_rate': away_form['draw_rate'],
             'away_form_goals_scored': away_form['goals_per_match'],
             'away_form_goals_conceded': away_form['goals_conceded_per_match'],
+            'away_form_clean_sheet_rate': away_form['clean_sheet_rate'],
+            'away_attack_strength': away_form['attack_strength'],
+            'away_defense_strength': away_form['defense_strength'],
+
             'home_overall_win_rate': home_overall['win_rate'],
             'away_overall_win_rate': away_overall['win_rate'],
+
+            'home_odds_reliability': home_odds_perf['odds_reliability'],
+            'home_favorite_win_rate': home_odds_perf['favorite_win_rate'],
+            'home_underdog_win_rate': home_odds_perf['underdog_win_rate'],
+            'away_odds_reliability': away_odds_perf['odds_reliability'],
+            'away_favorite_win_rate': away_odds_perf['favorite_win_rate'],
+            'away_underdog_win_rate': away_odds_perf['underdog_win_rate'],
+
             'h2h_matches': h2h['h2h_matches'],
-            'h2h_home_win_rate': h2h['h2h_home_wins'] / h2h['h2h_matches'] if h2h['h2h_matches'] > 0 else 0.33,
-            'h2h_draw_rate': h2h['h2h_draws'] / h2h['h2h_matches'] if h2h['h2h_matches'] > 0 else 0.33,
+            'h2h_home_win_rate': h2h['h2h_home_wins'] / h2h['h2h_matches'] if h2h['h2h_matches'] > 0 else 0.46,
+            'h2h_draw_rate': h2h['h2h_draws'] / h2h['h2h_matches'] if h2h['h2h_matches'] > 0 else 0.25,
             'h2h_avg_goals': h2h['h2h_avg_goals'],
+
+            'expected_home_goals': expected_home_goals,
+            'expected_away_goals': expected_away_goals,
+            'expected_total_goals': expected_home_goals + expected_away_goals,
+            'attack_defense_diff': home_form['attack_strength'] - away_form['defense_strength'],
+
             'ref_avg_yellow': ref_stats['ref_avg_yellow'],
-            'ref_avg_red': ref_stats['ref_avg_red'],
-            'odds_home': odds_home,
-            'odds_draw': odds_draw,
-            'odds_away': odds_away,
-            'odds_over25': odds_over25
+            'ref_avg_red': ref_stats['ref_avg_red']
         }
 
         return pd.DataFrame([features])[self.metadata['feature_columns']]
+
 
     def predict_match(self, home_team, away_team):
         """
@@ -158,7 +190,7 @@ class MatchPredictor:
                 'prediction': 'Yes' if prob > 0.5 else 'No'
             }
 
-        # Over/Under goals (match totals) - FIXED WITH MONOTONIC ENFORCEMENT
+        # Over/Under goals (match totals) - WITH MONOTONIC ENFORCEMENT
         predictions['goals_match'] = {}
 
         # Get raw predictions first
@@ -191,7 +223,7 @@ class MatchPredictor:
                 'under_odds': round(1 / (1 - prob_over), 2) if prob_over < 0.99 else 999
             }
 
-        # Team-specific goals - FIXED WITH MONOTONIC ENFORCEMENT
+        # Team-specific goals - WITH MONOTONIC ENFORCEMENT
         predictions['goals_team'] = {}
 
         # Get raw predictions for home team
@@ -221,12 +253,65 @@ class MatchPredictor:
                 'odds': round(1 / prob_home_over, 2) if prob_home_over > 0.01 else 999
             }
 
-        # Get raw predictions for away team (using same model, simplified)
+        # AWAY TEAM PREDICTIONS - Build separate feature set treating away team context
         raw_away_probs = {}
+
+        # Create features from away team's perspective (swap home/away)
+        away_features = {
+            # Swap form features
+            'home_form_win_rate': X.iloc[0]['away_form_win_rate'],
+            'home_form_draw_rate': X.iloc[0]['away_form_draw_rate'],
+            'home_form_goals_scored': X.iloc[0]['away_form_goals_scored'],
+            'home_form_goals_conceded': X.iloc[0]['away_form_goals_conceded'],
+            'home_form_clean_sheet_rate': X.iloc[0]['away_form_clean_sheet_rate'],
+            'home_attack_strength': X.iloc[0]['away_attack_strength'],
+            'home_defense_strength': X.iloc[0]['away_defense_strength'],
+
+            'away_form_win_rate': X.iloc[0]['home_form_win_rate'],
+            'away_form_draw_rate': X.iloc[0]['home_form_draw_rate'],
+            'away_form_goals_scored': X.iloc[0]['home_form_goals_scored'],
+            'away_form_goals_conceded': X.iloc[0]['home_form_goals_conceded'],
+            'away_form_clean_sheet_rate': X.iloc[0]['home_form_clean_sheet_rate'],
+            'away_attack_strength': X.iloc[0]['home_attack_strength'],
+            'away_defense_strength': X.iloc[0]['home_defense_strength'],
+
+            'home_overall_win_rate': X.iloc[0]['away_overall_win_rate'],
+            'away_overall_win_rate': X.iloc[0]['home_overall_win_rate'],
+
+            # Swap odds performance
+            'home_odds_reliability': X.iloc[0]['away_odds_reliability'],
+            'home_favorite_win_rate': X.iloc[0]['away_favorite_win_rate'],
+            'home_underdog_win_rate': X.iloc[0]['away_underdog_win_rate'],
+            'away_odds_reliability': X.iloc[0]['home_odds_reliability'],
+            'away_favorite_win_rate': X.iloc[0]['home_favorite_win_rate'],
+            'away_underdog_win_rate': X.iloc[0]['home_underdog_win_rate'],
+
+            # Keep h2h and referee the same
+            'h2h_matches': X.iloc[0]['h2h_matches'],
+            'h2h_home_win_rate': X.iloc[0]['h2h_home_win_rate'],
+            'h2h_draw_rate': X.iloc[0]['h2h_draw_rate'],
+            'h2h_avg_goals': X.iloc[0]['h2h_avg_goals'],
+
+            # Swap expected goals
+            'expected_home_goals': X.iloc[0]['expected_away_goals'],
+            'expected_away_goals': X.iloc[0]['expected_home_goals'],
+            'expected_total_goals': X.iloc[0]['expected_total_goals'],
+            'attack_defense_diff': X.iloc[0]['away_attack_strength'] - X.iloc[0]['home_defense_strength'],
+
+            'ref_avg_yellow': X.iloc[0]['ref_avg_yellow'],
+            'ref_avg_red': X.iloc[0]['ref_avg_red']
+        }
+
+        X_away = pd.DataFrame([away_features])[
+            self.metadata['feature_columns']]
+
+
+        # Predict for away team using their actual data
         for threshold in ['05', '15', '25']:
-            # Approximate away team scoring (simplified - in reality, use away-specific features)
-            prob_away_over = adjusted_home_probs[threshold] * 0.8
-            raw_away_probs[threshold] = prob_away_over
+            model = self.models[f'team_over_{threshold}']['model']
+            prob_away_over = model.predict_proba(X_away)[0][1]
+            raw_away_probs[threshold] = float(prob_away_over)
+
 
         # Enforce monotonic decreasing for away team
         adjusted_away_probs = {}

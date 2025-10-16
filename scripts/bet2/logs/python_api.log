@@ -1,0 +1,68 @@
+2025-10-15 19:13:34,645 - __main__ - INFO - Starting Flask API on 0.0.0.0:5000
+2025-10-15 19:13:34,646 - __main__ - INFO - Debug mode: True
+2025-10-15 19:16:07,708 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:16:07,709 - __main__ - INFO - Debug mode: True
+2025-10-15 19:16:07,828 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.50.5:5001
+2025-10-15 19:16:07,829 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-15 19:16:07,834 - werkzeug - INFO -  * Restarting with stat
+2025-10-15 19:16:11,111 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:16:11,112 - __main__ - INFO - Debug mode: True
+2025-10-15 19:16:11,158 - werkzeug - WARNING -  * Debugger is active!
+2025-10-15 19:16:11,553 - werkzeug - INFO -  * Debugger PIN: 113-089-368
+2025-10-15 19:16:28,857 - werkzeug - INFO - 192.168.50.5 - - [15/Oct/2025 19:16:28] "GET /api/health HTTP/1.1" 200 -
+2025-10-15 19:17:29,963 - routes.competitions - INFO - Found 1 competitions
+2025-10-15 19:17:29,965 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:17:29] "GET /api/competitions HTTP/1.1" 200 -
+2025-10-15 19:17:46,953 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:17:46] "[33mGET /api/teams?competition=premier_league&season=2025-2026 HTTP/1.1[0m" 404 -
+2025-10-15 19:18:02,883 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:18:02] "[33mGET /api/teams?competition=premier_league&season=2025_2026 HTTP/1.1[0m" 404 -
+2025-10-15 19:21:49,796 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:21:49,799 - __main__ - INFO - Debug mode: True
+2025-10-15 19:21:49,987 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.50.5:5001
+2025-10-15 19:21:49,988 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-15 19:21:49,993 - werkzeug - INFO -  * Restarting with stat
+2025-10-15 19:21:53,637 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:21:53,639 - __main__ - INFO - Debug mode: True
+2025-10-15 19:21:53,743 - werkzeug - WARNING -  * Debugger is active!
+2025-10-15 19:21:53,747 - werkzeug - INFO -  * Debugger PIN: 165-263-536
+2025-10-15 19:22:00,407 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:22:00] "GET /api/health HTTP/1.1" 200 -
+2025-10-15 19:22:00,474 - routes.competitions - INFO - Found 1 competitions
+2025-10-15 19:22:00,476 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:22:00] "GET /api/competitions HTTP/1.1" 200 -
+2025-10-15 19:22:00,528 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:22:00] "[33mGET /api/teams?competition=premier_league&season=2025-2026 HTTP/1.1[0m" 404 -
+2025-10-15 19:24:20,000 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:24:20,000 - __main__ - INFO - Debug mode: True
+2025-10-15 19:24:20,053 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.50.5:5001
+2025-10-15 19:24:20,053 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-15 19:24:20,056 - werkzeug - INFO -  * Restarting with stat
+2025-10-15 19:24:23,445 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:24:23,445 - __main__ - INFO - Debug mode: True
+2025-10-15 19:24:23,480 - werkzeug - WARNING -  * Debugger is active!
+2025-10-15 19:24:23,482 - werkzeug - INFO -  * Debugger PIN: 165-263-536
+2025-10-15 19:24:39,583 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:24:39] "[33mGET /api/teams?competition=premier_league&season=2025-2026 HTTP/1.1[0m" 404 -
+2025-10-15 19:26:36,596 - werkzeug - INFO -  * Detected change in '/var/www/html/pyethone/scripts/bet2/python_api/routes/teams.py', reloading
+2025-10-15 19:26:37,196 - werkzeug - INFO -  * Restarting with stat
+2025-10-15 19:26:40,629 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:26:40,630 - __main__ - INFO - Debug mode: True
+2025-10-15 19:26:40,692 - werkzeug - WARNING -  * Debugger is active!
+2025-10-15 19:26:40,695 - werkzeug - INFO -  * Debugger PIN: 165-263-536
+2025-10-15 19:27:01,379 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:27:01,380 - __main__ - INFO - Debug mode: True
+2025-10-15 19:27:01,508 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.50.5:5001
+2025-10-15 19:27:01,509 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-15 19:27:01,515 - werkzeug - INFO -  * Restarting with stat
+2025-10-15 19:27:05,105 - __main__ - INFO - Starting Flask API on 0.0.0.0:5001
+2025-10-15 19:27:05,106 - __main__ - INFO - Debug mode: True
+2025-10-15 19:27:05,182 - werkzeug - WARNING -  * Debugger is active!
+2025-10-15 19:27:05,185 - werkzeug - INFO -  * Debugger PIN: 165-263-536
+2025-10-15 19:27:12,504 - routes.teams - INFO - Found 20 teams for premier_league 2025-2026
+2025-10-15 19:27:12,511 - werkzeug - INFO - 127.0.0.1 - - [15/Oct/2025 19:27:12] "GET /api/teams?competition=premier_league&season=2025-2026 HTTP/1.1" 200 -

@@ -38,16 +38,22 @@ class FootballPredictor:
         
     def _get_feature_columns(self):
         """Define which columns to use as model inputs"""
-        return [
-            'home_form_win_rate', 'home_form_draw_rate',
-            'home_form_goals_scored', 'home_form_goals_conceded',
-            'away_form_win_rate', 'away_form_draw_rate',
-            'away_form_goals_scored', 'away_form_goals_conceded',
-            'home_overall_win_rate', 'away_overall_win_rate',
-            'h2h_matches', 'h2h_home_win_rate', 'h2h_draw_rate', 'h2h_avg_goals',
-            'ref_avg_yellow', 'ref_avg_red',
-            'odds_home', 'odds_draw', 'odds_away', 'odds_over25'
+        # Automatically detect all feature columns by excluding metadata and targets
+        exclude_cols = [
+            'match_id', 'home_team', 'away_team', 'date', 'season', 'temporal_weight',
+            'outcome', 'home_goals', 'away_goals', 'total_goals', 'total_cards',
+            'home_cards', 'away_cards'
         ]
+
+        feature_cols = [
+            col for col in self.df.columns if col not in exclude_cols]
+
+        print(f"\nUsing {len(feature_cols)} features:")
+        for col in feature_cols:
+            print(f"  - {col}")
+
+        return feature_cols
+
     
     def _prepare_data(self, target_column, regression=False):
         """
@@ -86,8 +92,9 @@ class FootballPredictor:
         print("Training 1X2 Model (Match Result)")
         print("="*60)
         
-        X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data('target_result')
-        
+        X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data(
+            'outcome')
+
         # Map H/D/A to numeric
         label_map = {'H': 0, 'D': 1, 'A': 2}
         y_train_numeric = y_train.map(label_map)
@@ -127,7 +134,7 @@ class FootballPredictor:
         print("Training 1X Model (Home Win or Draw)")
         print("="*60)
         
-        self.df['target_1x'] = self.df['target_result'].apply(lambda x: 1 if x in ['H', 'D'] else 0)
+        self.df['target_1x'] = self.df['outcome'].apply(lambda x: 1 if x in ['H', 'D'] else 0)
         X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data('target_1x')
         
         model_1x = xgb.XGBClassifier(
@@ -147,7 +154,7 @@ class FootballPredictor:
         print("Training 12 Model (Either Team Wins)")
         print("="*60)
         
-        self.df['target_12'] = self.df['target_result'].apply(lambda x: 1 if x in ['H', 'A'] else 0)
+        self.df['target_12'] = self.df['outcome'].apply(lambda x: 1 if x in ['H', 'A'] else 0)
         X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data('target_12')
         
         model_12 = xgb.XGBClassifier(
@@ -167,7 +174,7 @@ class FootballPredictor:
         print("Training X2 Model (Draw or Away Win)")
         print("="*60)
         
-        self.df['target_x2'] = self.df['target_result'].apply(lambda x: 1 if x in ['D', 'A'] else 0)
+        self.df['target_x2'] = self.df['outcome'].apply(lambda x: 1 if x in ['D', 'A'] else 0)
         X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data('target_x2')
         
         model_x2 = xgb.XGBClassifier(
@@ -191,7 +198,7 @@ class FootballPredictor:
             print("="*60)
             
             target_col = f'target_over_{threshold}'.replace('.', '')
-            self.df[target_col] = (self.df['target_total_goals'] > threshold).astype(int)
+            self.df[target_col] = (self.df['total_goals'] > threshold).astype(int)
             
             X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data(target_col)
             
@@ -219,11 +226,11 @@ class FootballPredictor:
             
             # Home team scoring
             target_col_home = f'target_home_over_{threshold}'.replace('.', '')
-            self.df[target_col_home] = (self.df['target_home_goals'] > threshold).astype(int)
+            self.df[target_col_home] = (self.df['home_goals'] > threshold).astype(int)
             
             # Away team scoring
             target_col_away = f'target_away_over_{threshold}'.replace('.', '')
-            self.df[target_col_away] = (self.df['target_away_goals'] > threshold).astype(int)
+            self.df[target_col_away] = (self.df['away_goals'] > threshold).astype(int)
             
             # Train combined model (predicts home AND away separately)
             # For simplicity, we'll average the features and predict match context
@@ -254,7 +261,7 @@ class FootballPredictor:
         
         # Total match cards (regression)
         X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data(
-            'target_total_cards', regression=True
+            'total_cards', regression=True
         )
         
         model_total = xgb.XGBRegressor(
@@ -272,7 +279,7 @@ class FootballPredictor:
         
         # Team-specific cards
         X_train, X_test, y_train, y_test, w_train, w_test = self._prepare_data(
-            'target_home_cards', regression=True
+            'home_cards', regression=True
         )
         
         model_team = xgb.XGBRegressor(
