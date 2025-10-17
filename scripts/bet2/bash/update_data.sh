@@ -30,6 +30,15 @@ echo "Data Update Finished: $(date)" | tee -a "$LOG_FILE"
 echo "Exit Code: $EXIT_CODE" | tee -a "$LOG_FILE"
 echo "========================================" | tee -a "$LOG_FILE"
 
+
+# Auto-match predictions after data update
+echo "" | tee -a $LOGFILE
+echo "========================================" | tee -a $LOGFILE
+echo "Auto-matching predictions..." | tee -a $LOGFILE
+echo "========================================" | tee -a $LOGFILE
+python3 "$PROJECT_ROOT/python_api/match_results.py" 2>&1 | tee -a $LOGFILE
+
+
 # Deactivate virtual environment
 deactivate
 

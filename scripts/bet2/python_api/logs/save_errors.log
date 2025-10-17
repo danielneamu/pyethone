@@ -1,0 +1,30 @@
+❌ Error saving prediction: attempt to write a readonly database
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/scripts/bet2/python_api/services/database_service.py", line 49, in save_prediction
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT OR REPLACE INTO predictions (
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<92 lines>...
+            'over_2.5', {}).get('certainty')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ))
+    ^^
+sqlite3.OperationalError: attempt to write a readonly database
+
+{"success": false, "error": "Database save failed"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}
+{"success": true, "message": "Prediction saved"}

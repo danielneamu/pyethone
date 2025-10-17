@@ -187,6 +187,18 @@ function displayResults(data) {
 
     container.innerHTML = html;
     container.style.display = 'block';
+
+    // Show save button
+    document.getElementById('savePredictionContainer').style.display = 'block';
+
+    // Store prediction data
+    window.currentPredictionData = {
+        homeTeam: data.match.home_team,
+        awayTeam: data.match.away_team,
+        modelType: data.model_type,
+        predictions: data.predictions
+    };
+
 }
 
 
@@ -822,5 +834,126 @@ document.getElementById('retrainBtn').addEventListener('click', async function (
         `;
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-cpu-fill me-2"></i>Retrain Models';
+    }
+});
+
+
+// Manual Save to Database Handler
+document.getElementById('savePredictionBtn').addEventListener('click', async function() {
+    const btn = this;
+    const container = document.getElementById('savePredictionContainer');
+    
+    if (!window.currentPredictionData) {
+        alert('No prediction data available');
+        return;
+    }
+    
+    // Disable button
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+    
+    try {
+        const response = await fetch(`${API_BASE}/predict_api.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                home_team: window.currentPredictionData.homeTeam,
+                away_team: window.currentPredictionData.awayTeam,
+                competition: COMPETITION,
+                model_type: window.currentPredictionData.modelType,
+                save_to_db: 'true'
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Success feedback
+        btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>✅ Saved Successfully!';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-secondary');
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            container.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-database-fill-add me-2"></i>💾 Save Prediction to Database';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-success');
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Save error:', error);
+        btn.innerHTML = '<i class="bi bi-x-circle-fill me-2"></i>❌ Save Failed';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-danger');
+        btn.disabled = false;
+    }
+});
+
+// Manual Save to Database Handler - FAST VERSION
+document.getElementById('savePredictionBtn').addEventListener('click', async function () {
+    const btn = this;
+    const container = document.getElementById('savePredictionContainer');
+
+    if (!window.currentPredictionData) {
+        alert('No prediction data available');
+        return;
+    }
+
+    // Disable button
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+
+    try {
+        // Send directly to save-only endpoint with existing prediction data
+        const response = await fetch(`${API_BASE}/save_prediction_api.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                home_team: window.currentPredictionData.homeTeam,
+                away_team: window.currentPredictionData.awayTeam,
+                competition: COMPETITION,
+                model_type: window.currentPredictionData.modelType,
+                predictions: window.currentPredictionData.predictions,
+                match_date: new Date().toISOString().split('T')[0]
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Success feedback
+            btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>✅ Saved!';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-secondary');
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                container.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-database-fill-add me-2"></i>💾 Save Prediction to Database';
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-success');
+            }, 3000);
+        } else {
+            throw new Error(data.error || 'Save failed');
+        }
+
+    } catch (error) {
+        console.error('Save error:', error);
+        btn.innerHTML = '<i class="bi bi-x-circle-fill me-2"></i>❌ Save Failed';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-danger');
+        btn.disabled = false;
+
+        setTimeout(() => {
+            btn.innerHTML = '<i class="bi bi-database-fill-add me-2"></i>💾 Save Prediction to Database';
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-success');
+        }, 3000);
     }
 });

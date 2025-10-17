@@ -32,6 +32,11 @@ require_once __DIR__ . '/../php_backend/config.php';
                 <i class="bi bi-activity me-2"></i>
                 Football Predictions ML
             </a>
+            <div class="text-center mt-3">
+                <a href="analytics.php" class="btn btn-info">
+                    <i class="bi bi-graph-up me-2"></i>📊 View Analytics & Saved Predictions
+                </a>
+            </div>
             <span class="navbar-text text-light">
                 <i class="bi bi-cpu me-1"></i>
                 Powered by XGBoost & Random Forest
@@ -152,6 +157,14 @@ require_once __DIR__ . '/../php_backend/config.php';
                 <div id="resultsContainer" style="display: none;">
                     <!-- Results will be inserted here by JavaScript -->
                 </div>
+                <!-- Save2DBButton - TO DB -->
+                <div class="text-center mt-3" id="savePredictionContainer" style="display: none;">
+                    <button id="savePredictionBtn" class="btn btn-success btn-lg">
+                        <i class="bi bi-database-fill-add me-2"></i>💾 Save Prediction to Database
+                    </button>
+                    <p class="text-muted mt-2 small">Save this prediction for accuracy tracking</p>
+                </div>
+
             </div>
         </div>
     </div>

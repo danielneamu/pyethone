@@ -1,0 +1,8 @@
+# Saturday 11:59 PM
+59 23 * * 6 /var/www/html/pyethone/scripts/bet2/bash/collect_results.sh
+
+# Sunday 11:59 PM
+59 23 * * 0 /var/www/html/pyethone/scripts/bet2/bash/collect_results.sh
+
+# Monday 11:59 PM
+59 23 * * 1 /var/www/html/pyethone/scripts/bet2/bash/collect_results.sh

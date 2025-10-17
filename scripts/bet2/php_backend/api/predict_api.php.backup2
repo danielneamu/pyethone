@@ -34,10 +34,10 @@ if (!$data) {
     exit;
 }
 
-$homeTeam = $data['home_team'] ?? null;
-$awayTeam = $data['away_team'] ?? null;
+$homeTeam = $data['hometeam'] ?? null;
+$awayTeam = $data['awayteam'] ?? null;
 $competition = $data['competition'] ?? 'premier_league';
-$modelType = $data['model_type'] ?? 'ensemble';
+$modelType = $data['modeltype'] ?? 'ensemble';
 
 // Validate required fields
 if (!$homeTeam || !$awayTeam) {
@@ -109,42 +109,6 @@ if ($result === null) {
 if (!isset($result['model_type'])) {
     $result['model_type'] = $modelType;
 }
-
-// ==================== MANUAL SAVE TO DATABASE ====================
-// Only save if explicitly requested via the "Save to DB" button
-if (isset($result['success']) && $result['success'] === true && isset($result['predictions'])) {
-
-    // Check if save_to_db flag is present (sent from frontend button)
-    $saveToDb = isset($data['save_to_db']) && $data['save_to_db'] === 'true';
-
-    if ($saveToDb) {
-        try {
-            $predictionData = [
-                'home_team' => $homeTeam,
-                'away_team' => $awayTeam,
-                'competition' => $competition,
-                'model_type' => $modelType,
-                'predictions' => $result['predictions'],
-                'match_date' => date('Y-m-d')
-            ];
-
-            $pythonSaveScript = __DIR__ . '/../../python_api/save_prediction_to_db.py';
-
-            if (file_exists($pythonSaveScript)) {
-                $jsonData = escapeshellarg(json_encode($predictionData));
-                $logFile = __DIR__ . '/../../python_api/logs/save_errors.log';
-                $saveCommand = "/var/www/html/pyethone/pye_venv/bin/python3 $pythonSaveScript $jsonData >> $logFile 2>&1 &";
-                exec($saveCommand);
-                error_log("✅ MANUAL save triggered for $homeTeam vs $awayTeam");
-            } else {
-                error_log("⚠️ Save script not found: $pythonSaveScript");
-            }
-        } catch (Exception $e) {
-            error_log("⚠️ Manual save error: " . $e->getMessage());
-        }
-    }
-}
-// ==================== END MANUAL SAVE ====================
 
 // Return result
 echo json_encode($result);
