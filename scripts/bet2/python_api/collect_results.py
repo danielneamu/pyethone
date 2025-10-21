@@ -29,7 +29,7 @@ class ResultsCollector:
 
     def __init__(self):
         self.db = DatabaseService()
-        self.data_loader = DataLoader('premierleague')
+        self.data_loader = DataLoader('premier_league')
 
     def collect_results(self, days_back: int = 7):
         """
