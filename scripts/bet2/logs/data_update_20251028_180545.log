@@ -1,0 +1,18 @@
+========================================
+Data Update Started: Tue Oct 28 18:05:45 EET 2025
+========================================
+======================================================================
+Premier League 2025-2026 - Data Update Script
+Timestamp: 2025-10-28 18:05:48
+======================================================================
+✓ Found existing file: /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+  Existing data: 180 matches, 20 teams
+
+Starting incremental scrape...
+  Request delay: ~8s
+  Team delay: ~15s
+
+[1/20] 
+[Scraping Arsenal]
+  Existing matchweeks: ['Matchweek 1', 'Matchweek 2', 'Matchweek 3', 'Matchweek 4', 'Matchweek 5', 'Matchweek 6', 'Matchweek 7', 'Matchweek 8', 'Matchweek 9']
+  → Checking schedule for new matches...
