@@ -1,0 +1,50 @@
+========================================
+Results Collection Started: Tue Nov  4 14:43:52 EET 2025
+========================================
+
+2025-11-04 14:43:58,195 - __main__ - INFO - ================================================================================
+2025-11-04 14:43:58,195 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 14:43:58,196 - __main__ - INFO - ================================================================================
+2025-11-04 14:43:58,209 - __main__ - INFO - 📊 Found 20 unmatched predictions
+2025-11-04 14:43:58,213 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 14:43:58,213 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 14:43:58,266 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 14:43:58,283 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 14:43:58,303 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 14:43:58,365 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 14:43:58,380 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 14:43:58,408 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 14:43:58,514 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 14:43:58,536 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 14:43:58,673 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 14:43:58,723 - __main__ - WARNING - ❌ No match found for Sunderland vs Everton on 2025-11-04
+2025-11-04 14:43:58,782 - __main__ - WARNING - ❌ No match found for Manchester City vs Bournemouth on 2025-11-04
+2025-11-04 14:43:58,826 - __main__ - WARNING - ❌ No match found for West Ham vs Newcastle Utd on 2025-11-02
+2025-11-04 14:43:58,850 - __main__ - WARNING - ❌ No match found for Liverpool vs Aston Villa on 2025-11-01
+2025-11-04 14:43:58,875 - __main__ - WARNING - ❌ No match found for Tottenham vs Chelsea on 2025-11-01
+2025-11-04 14:43:58,898 - __main__ - WARNING - ❌ No match found for Nott'ham Forest vs Manchester Utd on 2025-11-01
+2025-11-04 14:43:58,926 - __main__ - WARNING - ❌ No match found for Fulham vs Wolves on 2025-11-01
+2025-11-04 14:43:58,948 - __main__ - WARNING - ❌ No match found for Crystal Palace vs Brentford on 2025-11-01
+2025-11-04 14:43:58,974 - __main__ - WARNING - ❌ No match found for Burnley vs Arsenal on 2025-11-01
+2025-11-04 14:43:58,999 - __main__ - WARNING - ❌ No match found for Brighton vs Leeds United on 2025-11-01
+2025-11-04 14:43:59,019 - __main__ - WARNING - ❌ No match found for Leeds United vs West Ham on 2025-10-24
+2025-11-04 14:43:59,040 - __main__ - WARNING - ❌ No match found for Chelsea vs Sunderland on 2025-10-25
+2025-11-04 14:43:59,063 - __main__ - WARNING - ❌ No match found for Newcastle Utd vs Fulham on 2025-10-25
+2025-11-04 14:43:59,084 - __main__ - WARNING - ❌ No match found for Manchester Utd vs Brighton on 2025-10-25
+2025-11-04 14:43:59,103 - __main__ - WARNING - ❌ No match found for Brentford vs Liverpool on 2025-10-25
+2025-11-04 14:43:59,122 - __main__ - WARNING - ❌ No match found for Arsenal vs Crystal Palace on 2025-10-26
+2025-11-04 14:43:59,141 - __main__ - WARNING - ❌ No match found for Aston Villa vs Manchester City on 2025-10-26
+2025-11-04 14:43:59,164 - __main__ - WARNING - ❌ No match found for Bournemouth vs Nott'ham Forest on 2025-10-26
+2025-11-04 14:43:59,221 - __main__ - WARNING - ❌ No match found for Everton vs Tottenham on 2025-10-26
+2025-11-04 14:43:59,283 - __main__ - WARNING - ❌ No match found for Wolves vs Burnley on 2025-10-26
+2025-11-04 14:43:59,293 - __main__ - INFO - ✅ Matched 0/20 predictions with results
+2025-11-04 14:43:59,293 - __main__ - INFO - 
+================================================================================
+2025-11-04 14:43:59,293 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 14:43:59,294 - __main__ - INFO - ================================================================================
+2025-11-04 14:43:59,353 - __main__ - WARNING - ⚠️ No matched predictions found. Cannot calculate metrics.
+
+========================================
+Results Collection Finished: Tue Nov  4 14:44:01 EET 2025
+Exit Code: 0
+========================================

@@ -1,0 +1,54 @@
+========================================
+Results Collection Started: Tue Nov  4 18:02:38 EET 2025
+========================================
+
+2025-11-04 18:02:46,155 - __main__ - INFO - ================================================================================
+2025-11-04 18:02:46,156 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 18:02:46,156 - __main__ - INFO - ================================================================================
+2025-11-04 18:02:46,167 - __main__ - INFO - 📊 Found 10 unmatched predictions
+2025-11-04 18:02:46,170 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 18:02:46,171 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 18:02:46,226 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 18:02:46,250 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 18:02:46,291 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 18:02:46,392 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 18:02:46,411 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 18:02:46,437 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 18:02:46,586 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 18:02:46,605 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 18:02:46,683 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 18:02:46,691 - __main__ - INFO - 📊 Loaded 0 recent matches from CSV (after 2025-10-28)
+2025-11-04 18:02:46,727 - __main__ - WARNING - ⚠️  No match found for Sunderland vs Everton on 2025-11-03
+2025-11-04 18:02:46,765 - __main__ - WARNING - ⚠️  No match found for Manchester City vs Bournemouth on 2025-11-02
+2025-11-04 18:02:46,801 - __main__ - WARNING - ⚠️  No match found for West Ham vs Newcastle Utd on 2025-11-02
+2025-11-04 18:02:46,834 - __main__ - WARNING - ⚠️  No match found for Liverpool vs Aston Villa on 2025-11-01
+2025-11-04 18:02:46,869 - __main__ - WARNING - ⚠️  No match found for Tottenham vs Chelsea on 2025-11-01
+2025-11-04 18:02:46,899 - __main__ - WARNING - ⚠️  No match found for Nott'ham Forest vs Manchester Utd on 2025-11-01
+2025-11-04 18:02:46,931 - __main__ - WARNING - ⚠️  No match found for Fulham vs Wolves on 2025-11-01
+2025-11-04 18:02:46,963 - __main__ - WARNING - ⚠️  No match found for Crystal Palace vs Brentford on 2025-11-01
+2025-11-04 18:02:46,996 - __main__ - WARNING - ⚠️  No match found for Burnley vs Arsenal on 2025-11-01
+2025-11-04 18:02:47,027 - __main__ - WARNING - ⚠️  No match found for Brighton vs Leeds United on 2025-11-01
+2025-11-04 18:02:47,027 - __main__ - INFO - ✅ Matched 0/10 predictions with results
+2025-11-04 18:02:47,028 - __main__ - INFO - 
+================================================================================
+2025-11-04 18:02:47,028 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 18:02:47,028 - __main__ - INFO - ================================================================================
+2025-11-04 18:02:47,081 - __main__ - INFO - 📊 Analyzing 9 matched predictions
+2025-11-04 18:02:47,094 - __main__ - INFO - 📊 Data available - Goals: True, BTTS: True, Cards: True
+2025-11-04 18:02:47,112 - __main__ - INFO - 📊 Found 9 predictions with results
+2025-11-04 18:02:47,210 - __main__ - INFO - ⚽ Match Result (1X2): Accuracy=44.4%, Brier=0.205, F1=0.315
+2025-11-04 18:02:47,260 - __main__ - INFO - ⚽ Goals O/U 0.5: Accuracy=100.0%, Brier=0.001, AUC=N/A
+2025-11-04 18:02:47,338 - __main__ - INFO - ⚽ Goals O/U 1.5: Accuracy=88.9%, Brier=0.113, AUC=0.125
+2025-11-04 18:02:47,399 - __main__ - INFO - ⚽ Goals O/U 2.5: Accuracy=55.6%, Brier=0.216, AUC=0.700
+2025-11-04 18:02:47,463 - __main__ - INFO - ⚽ Goals O/U 3.5: Accuracy=88.9%, Brier=0.160, AUC=0.875
+2025-11-04 18:02:47,519 - __main__ - INFO - ⚽ BTTS: Accuracy=55.6%, Brier=0.243, AUC=0.650
+2025-11-04 18:02:47,590 - __main__ - INFO - 🟨 Cards O/U 2.5: Accuracy=33.3%, Brier=0.435, AUC=0.278
+2025-11-04 18:02:47,750 - __main__ - INFO - 🟨 Cards O/U 3.5: Accuracy=33.3%, Brier=0.267, AUC=0.929
+2025-11-04 18:02:47,847 - __main__ - INFO - 🟨 Cards O/U 4.5: Accuracy=66.7%, Brier=0.229, AUC=0.286
+2025-11-04 18:02:47,847 - __main__ - INFO - 
+✅ Metrics calculation complete!
+
+========================================
+Results Collection Finished: Tue Nov  4 18:02:48 EET 2025
+Exit Code: 0
+========================================

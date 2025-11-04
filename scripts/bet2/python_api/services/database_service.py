@@ -67,8 +67,6 @@ class DatabaseService:
                 prediction_data['away_team'],
                 prediction_data.get('competition', 'premier_league'),
                 prediction_data.get('model_type', 'ensemble'),
-
-                # Match result
                 preds.get('match_result', {}).get('prediction'),
                 preds.get('match_result', {}).get(
                     'probabilities', {}).get('home_win'),
@@ -77,64 +75,44 @@ class DatabaseService:
                 preds.get('match_result', {}).get(
                     'probabilities', {}).get('away_win'),
                 preds.get('match_result', {}).get('certainty'),
-
-                # Double chance
                 preds.get('double_chance', {}).get(
                     'probabilities', {}).get('1X'),
                 preds.get('double_chance', {}).get(
                     'probabilities', {}).get('12'),
                 preds.get('double_chance', {}).get(
                     'probabilities', {}).get('X2'),
-
-                # Goals O/U 0.5
                 preds.get('goals', {}).get('over_0.5', {}).get('prediction'),
                 preds.get('goals', {}).get(
                     'over_0.5', {}).get('probability_over'),
                 preds.get('goals', {}).get('over_0.5', {}).get('certainty'),
-
-                # Goals O/U 1.5
                 preds.get('goals', {}).get('over_1.5', {}).get('prediction'),
                 preds.get('goals', {}).get(
                     'over_1.5', {}).get('probability_over'),
                 preds.get('goals', {}).get('over_1.5', {}).get('certainty'),
-
-                # Goals O/U 2.5
                 preds.get('goals', {}).get('over_2.5', {}).get('prediction'),
                 preds.get('goals', {}).get(
                     'over_2.5', {}).get('probability_over'),
                 preds.get('goals', {}).get('over_2.5', {}).get('certainty'),
-
-                # Goals O/U 3.5
                 preds.get('goals', {}).get('over_3.5', {}).get('prediction'),
                 preds.get('goals', {}).get(
                     'over_3.5', {}).get('probability_over'),
                 preds.get('goals', {}).get('over_3.5', {}).get('certainty'),
-
-                # BTTS
                 preds.get('goals', {}).get('btts', {}).get('prediction'),
                 preds.get('goals', {}).get('btts', {}).get('probability_yes'),
                 preds.get('goals', {}).get('btts', {}).get('certainty'),
-
-                # Cards O/U 3.5
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_3.5', {}).get('prediction'),
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_3.5', {}).get('probability_over'),
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_3.5', {}).get('certainty'),
-
-                # Cards O/U 4.5
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_4.5', {}).get('prediction'),
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_4.5', {}).get('probability_over'),
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_4.5', {}).get('certainty'),
-
-                # Match date
                 prediction_data.get('match_date'),
-
-                # Cards O/U 2.5 (at the end!)
                 preds.get('cards', {}).get('total_match', {}).get(
                     'over_2.5', {}).get('prediction'),
                 preds.get('cards', {}).get('total_match', {}).get(
@@ -153,10 +131,6 @@ class DatabaseService:
             import traceback
             logger.error(traceback.format_exc())
             return False
-
-
-
-
 
     def get_unmatched_predictions(self, days_back: int = 7) -> List[Dict]:
         """Get predictions without matched results"""
@@ -179,13 +153,14 @@ class DatabaseService:
         return results
 
     def save_actual_result(self, result_data: Dict) -> bool:
-        """Save actual match result"""
+        """Save actual match result to both actual_results and predictions tables"""
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
 
             match_id = result_data['match_id']
 
+            # Insert into actual_results table (for archive)
             cursor.execute("""
                 INSERT OR REPLACE INTO actual_results (
                     match_id, home_team, away_team,
@@ -208,12 +183,32 @@ class DatabaseService:
                 result_data['match_date']
             ))
 
-            # Mark prediction as matched
+            # Update predictions table with actual results
             cursor.execute("""
                 UPDATE predictions 
-                SET is_matched = 1 
+                SET 
+                    actual_result = ?,
+                    goals_home = ?,
+                    goals_away = ?,
+                    total_goals = ?,
+                    btts_actual = ?,
+                    cards_home = ?,
+                    cards_away = ?,
+                    total_cards = ?,
+                    is_matched = 1,
+                    matched_date = CURRENT_TIMESTAMP
                 WHERE match_id = ?
-            """, (match_id,))
+            """, (
+                result_data['actual_result'],
+                result_data['goals_home'],
+                result_data['goals_away'],
+                result_data['total_goals'],
+                result_data['btts_actual'],
+                result_data.get('cards_home', 0),
+                result_data.get('cards_away', 0),
+                result_data.get('total_cards', 0),
+                match_id
+            ))
 
             conn.commit()
             conn.close()
@@ -231,13 +226,11 @@ class DatabaseService:
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT 
-                p.*,
-                r.actual_result, r.goals_home, r.goals_away, r.total_goals,
-                r.btts_actual, r.total_cards
-            FROM predictions p
-            INNER JOIN actual_results r ON p.match_id = r.match_id
-            ORDER BY p.prediction_date DESC
+            SELECT *
+            FROM predictions
+            WHERE is_matched = 1
+            AND actual_result IS NOT NULL
+            ORDER BY prediction_date DESC
             LIMIT ?
         """, (limit,))
 

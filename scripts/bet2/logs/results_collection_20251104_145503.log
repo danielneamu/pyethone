@@ -1,0 +1,156 @@
+========================================
+Results Collection Started: Tue Nov  4 14:55:03 EET 2025
+========================================
+
+2025-11-04 14:55:10,126 - __main__ - INFO - ================================================================================
+2025-11-04 14:55:10,127 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 14:55:10,127 - __main__ - INFO - ================================================================================
+2025-11-04 14:55:10,134 - __main__ - INFO - 📊 Found 21 unmatched predictions
+2025-11-04 14:55:10,136 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 14:55:10,136 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 14:55:10,166 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 14:55:10,179 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 14:55:10,198 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 14:55:10,293 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 14:55:10,313 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 14:55:10,327 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 14:55:10,403 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 14:55:10,413 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 14:55:10,450 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 14:55:10,462 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Sunderland, away=Everton
+2025-11-04 14:55:10,475 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,479 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:55:10,484 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:55:10,497 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,500 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Manchester City, away=Bournemouth
+2025-11-04 14:55:10,515 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,520 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:55:10,524 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:55:10,541 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,544 - __main__ - INFO - 🔍 Looking for: date=2025-11-02, home=West Ham, away=Newcastle Utd
+2025-11-04 14:55:10,560 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,565 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:55:10,571 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:55:10,585 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,588 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Liverpool, away=Aston Villa
+2025-11-04 14:55:10,600 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,612 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:55:10,616 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:55:10,632 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,655 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Tottenham, away=Chelsea
+2025-11-04 14:55:10,678 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,683 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:55:10,689 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:55:10,709 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,712 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Nott'ham Forest, away=Manchester Utd
+2025-11-04 14:55:10,727 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,732 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:55:10,738 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:55:10,752 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,756 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Fulham, away=Wolves
+2025-11-04 14:55:10,774 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,779 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:55:10,785 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:55:10,803 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,805 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Crystal Palace, away=Brentford
+2025-11-04 14:55:10,819 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,823 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:55:10,827 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:55:10,840 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,842 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Burnley, away=Arsenal
+2025-11-04 14:55:10,856 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,860 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:55:10,864 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:55:10,877 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,879 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Brighton, away=Leeds United
+2025-11-04 14:55:10,892 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:55:10,895 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:55:10,901 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:55:10,914 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:55:10,917 - __main__ - INFO - 🔍 Looking for: date=2025-10-24, home=Leeds United, away=West Ham
+2025-11-04 14:55:10,926 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:10,965 - services.database_service - INFO - ✅ Saved result: Leeds United_West Ham_2025-10-28
+2025-11-04 14:55:10,966 - __main__ - INFO - ✅ Matched: Leeds United vs West Ham on 2025-10-24
+2025-11-04 14:55:10,968 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Chelsea, away=Sunderland
+2025-11-04 14:55:10,984 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,016 - services.database_service - INFO - ✅ Saved result: Chelsea_Sunderland_2025-10-28
+2025-11-04 14:55:11,016 - __main__ - INFO - ✅ Matched: Chelsea vs Sunderland on 2025-10-25
+2025-11-04 14:55:11,018 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Newcastle Utd, away=Fulham
+2025-11-04 14:55:11,028 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,062 - services.database_service - INFO - ✅ Saved result: Newcastle Utd_Fulham_2025-10-28
+2025-11-04 14:55:11,063 - __main__ - INFO - ✅ Matched: Newcastle Utd vs Fulham on 2025-10-25
+2025-11-04 14:55:11,065 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Manchester Utd, away=Brighton
+2025-11-04 14:55:11,075 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,100 - services.database_service - INFO - ✅ Saved result: Manchester Utd_Brighton_2025-10-28
+2025-11-04 14:55:11,101 - __main__ - INFO - ✅ Matched: Manchester Utd vs Brighton on 2025-10-25
+2025-11-04 14:55:11,102 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Brentford, away=Liverpool
+2025-11-04 14:55:11,111 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,136 - services.database_service - INFO - ✅ Saved result: Brentford_Liverpool_2025-10-28
+2025-11-04 14:55:11,137 - __main__ - INFO - ✅ Matched: Brentford vs Liverpool on 2025-10-25
+2025-11-04 14:55:11,139 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Arsenal, away=Crystal Palace
+2025-11-04 14:55:11,147 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,174 - services.database_service - INFO - ✅ Saved result: Arsenal_Crystal Palace_2025-10-28
+2025-11-04 14:55:11,174 - __main__ - INFO - ✅ Matched: Arsenal vs Crystal Palace on 2025-10-26
+2025-11-04 14:55:11,176 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Aston Villa, away=Manchester City
+2025-11-04 14:55:11,187 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,221 - services.database_service - INFO - ✅ Saved result: Aston Villa_Manchester City_2025-10-28
+2025-11-04 14:55:11,222 - __main__ - INFO - ✅ Matched: Aston Villa vs Manchester City on 2025-10-26
+2025-11-04 14:55:11,224 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Bournemouth, away=Nott'ham Forest
+2025-11-04 14:55:11,235 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,273 - services.database_service - INFO - ✅ Saved result: Bournemouth_Nott'ham Forest_2025-10-28
+2025-11-04 14:55:11,273 - __main__ - INFO - ✅ Matched: Bournemouth vs Nott'ham Forest on 2025-10-26
+2025-11-04 14:55:11,275 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Everton, away=Tottenham
+2025-11-04 14:55:11,286 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,321 - services.database_service - INFO - ✅ Saved result: Everton_Tottenham_2025-10-28
+2025-11-04 14:55:11,322 - __main__ - INFO - ✅ Matched: Everton vs Tottenham on 2025-10-26
+2025-11-04 14:55:11,324 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Wolves, away=Burnley
+2025-11-04 14:55:11,334 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,366 - services.database_service - INFO - ✅ Saved result: Wolves_Burnley_2025-10-28
+2025-11-04 14:55:11,366 - __main__ - INFO - ✅ Matched: Wolves vs Burnley on 2025-10-26
+2025-11-04 14:55:11,371 - __main__ - INFO - 🔍 Looking for: date=2025-10-20, home=West Ham, away=Brentford
+2025-11-04 14:55:11,381 - __main__ - INFO - ✅ Found exact match!
+2025-11-04 14:55:11,423 - services.database_service - INFO - ✅ Saved result: West Ham_Brentford_2025-10-17
+2025-11-04 14:55:11,428 - __main__ - INFO - ✅ Matched: West Ham vs Brentford on 2025-10-20
+2025-11-04 14:55:11,428 - __main__ - INFO - ✅ Matched 11/21 predictions with results
+2025-11-04 14:55:11,429 - __main__ - INFO - 
+================================================================================
+2025-11-04 14:55:11,429 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 14:55:11,431 - __main__ - INFO - ================================================================================
+2025-11-04 14:55:11,473 - __main__ - INFO - 📊 Analyzing 11 matched predictions
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 235, in _encode
+    return _map_to_integer(values, uniques)
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 174, in _map_to_integer
+    return xp.asarray([table[v] for v in values], device=device(values))
+                       ~~~~~^^^
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 167, in __missing__
+    raise KeyError(key)
+KeyError: 'Away Win'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 443, in <module>
+    main()
+    ~~~~^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 439, in main
+    collector.collect_results(days_back=30)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 80, in collect_results
+    self.calculate_metrics()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 193, in calculate_metrics
+    self._calculate_match_result_metrics(df)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 236, in _calculate_match_result_metrics
+    y_pred = le.transform(valid['prediction_1x2'])
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/preprocessing/_label.py", line 134, in transform
+    return _encode(y, uniques=self.classes_)
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 237, in _encode
+    raise ValueError(f"y contains previously unseen labels: {e}")
+ValueError: y contains previously unseen labels: 'Away Win'
+
+========================================
+Results Collection Finished: Tue Nov  4 14:55:12 EET 2025
+Exit Code: 0
+========================================

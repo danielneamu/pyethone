@@ -1,0 +1,112 @@
+========================================
+Results Collection Started: Tue Nov  4 16:22:56 EET 2025
+========================================
+
+2025-11-04 16:23:20,643 - __main__ - INFO - ================================================================================
+2025-11-04 16:23:20,643 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 16:23:20,644 - __main__ - INFO - ================================================================================
+2025-11-04 16:23:20,659 - __main__ - INFO - 📊 Found 10 unmatched predictions
+2025-11-04 16:23:20,663 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 16:23:20,663 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 16:23:20,763 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 16:23:20,793 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 16:23:20,880 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 16:23:21,051 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 16:23:21,081 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 16:23:21,110 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 16:23:21,334 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 16:23:21,471 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 16:23:21,673 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 16:23:21,698 - __main__ - INFO - 🔍 Looking for: date=2025-11-03, home=Sunderland, away=Everton
+2025-11-04 16:23:21,733 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:21,746 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 16:23:21,753 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 16:23:21,773 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:21,777 - __main__ - INFO - 🔍 Looking for: date=2025-11-02, home=Manchester City, away=Bournemouth
+2025-11-04 16:23:21,803 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:21,809 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 16:23:21,821 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 16:23:21,845 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:21,847 - __main__ - INFO - 🔍 Looking for: date=2025-11-02, home=West Ham, away=Newcastle Utd
+2025-11-04 16:23:21,866 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:21,871 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 16:23:21,876 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 16:23:21,890 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:21,905 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Liverpool, away=Aston Villa
+2025-11-04 16:23:21,951 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:22,047 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 16:23:22,071 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 16:23:22,110 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:22,111 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Tottenham, away=Chelsea
+2025-11-04 16:23:22,172 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:22,214 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 16:23:22,309 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 16:23:22,694 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:22,731 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Nott'ham Forest, away=Manchester Utd
+2025-11-04 16:23:22,804 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:22,809 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 16:23:22,816 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 16:23:22,859 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:22,862 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Fulham, away=Wolves
+2025-11-04 16:23:22,897 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:22,909 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 16:23:22,928 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 16:23:22,993 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:23,033 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Crystal Palace, away=Brentford
+2025-11-04 16:23:23,429 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:23,479 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 16:23:23,494 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 16:23:23,558 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:23,563 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Burnley, away=Arsenal
+2025-11-04 16:23:23,682 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:23,763 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 16:23:23,838 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 16:23:23,935 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:23,939 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Brighton, away=Leeds United
+2025-11-04 16:23:23,976 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 16:23:23,992 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 16:23:24,010 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 16:23:24,053 - __main__ - WARNING - ❌ No match found
+2025-11-04 16:23:24,053 - __main__ - INFO - ✅ Matched 0/10 predictions with results
+2025-11-04 16:23:24,054 - __main__ - INFO - 
+================================================================================
+2025-11-04 16:23:24,054 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 16:23:24,054 - __main__ - INFO - ================================================================================
+2025-11-04 16:23:24,134 - __main__ - INFO - 📊 Analyzing 9 matched predictions
+2025-11-04 16:23:24,138 - __main__ - INFO - 📊 Available columns: ['id', 'match_id', 'home_team', 'away_team', 'competition', 'model_type', 'prediction_1x2', 'prob_home', 'prob_draw', 'prob_away', 'certainty_1x2', 'prob_home_draw', 'prob_home_away', 'prob_draw_away', 'prediction_goals_05', 'prob_over_05', 'certainty_goals_05', 'prediction_goals_15', 'prob_over_15', 'certainty_goals_15', 'prediction_goals_25', 'prob_over_25', 'certainty_goals_25', 'prediction_goals_35', 'prob_over_35', 'certainty_goals_35', 'prediction_btts', 'prob_btts_yes', 'certainty_btts', 'prediction_cards_35', 'prob_cards_over_35', 'certainty_cards_35', 'prediction_cards_45', 'prob_cards_over_45', 'certainty_cards_45', 'prediction_date', 'match_date', 'is_matched', 'prediction_cards_25', 'prob_cards_over_25', 'certainty_cards_25', 'actual_result', 'actual_goals', 'actual_btts', 'actual_cards', 'correct_1x2', 'correct_goals_05', 'correct_goals_15', 'correct_goals_25', 'correct_goals_35', 'correct_btts', 'correct_cards_25', 'correct_cards_35', 'correct_cards_45', 'matched_date']
+2025-11-04 16:23:24,156 - __main__ - INFO - 📊 Found 9 predictions with results
+2025-11-04 16:23:24,163 - __main__ - INFO - 📊 Has goals data: False, Has BTTS: False, Has cards: False
+2025-11-04 16:23:24,548 - __main__ - INFO - ⚽ Match Result (1X2): Accuracy=44.4%, Brier=0.205, F1=0.315
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'goals_home'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 431, in <module>
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 427, in main
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 68, in collect_results
+    logger.info(
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 193, in calculate_metrics
+    self._calculate_match_result_metrics(matched_df)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 407, in _calculate_market_performance
+    'calculation_period': 'all_time'
+                           ^^^^^^^^^
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4113, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'goals_home'
+
+========================================
+Results Collection Finished: Tue Nov  4 16:23:27 EET 2025
+Exit Code: 0
+========================================

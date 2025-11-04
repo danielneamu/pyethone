@@ -1,0 +1,112 @@
+========================================
+Results Collection Started: Tue Nov  4 14:57:28 EET 2025
+========================================
+
+2025-11-04 14:57:33,006 - __main__ - INFO - ================================================================================
+2025-11-04 14:57:33,006 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 14:57:33,006 - __main__ - INFO - ================================================================================
+2025-11-04 14:57:33,011 - __main__ - INFO - 📊 Found 10 unmatched predictions
+2025-11-04 14:57:33,013 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 14:57:33,013 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 14:57:33,037 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 14:57:33,048 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 14:57:33,063 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 14:57:33,114 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 14:57:33,125 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 14:57:33,137 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 14:57:33,194 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 14:57:33,206 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 14:57:33,254 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 14:57:33,260 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Sunderland, away=Everton
+2025-11-04 14:57:33,267 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,269 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:57:33,271 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:57:33,278 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,279 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Manchester City, away=Bournemouth
+2025-11-04 14:57:33,285 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,287 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:57:33,289 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:57:33,295 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,296 - __main__ - INFO - 🔍 Looking for: date=2025-11-02, home=West Ham, away=Newcastle Utd
+2025-11-04 14:57:33,303 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,306 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:57:33,309 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:57:33,315 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,317 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Liverpool, away=Aston Villa
+2025-11-04 14:57:33,324 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,326 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:57:33,328 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:57:33,336 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,337 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Tottenham, away=Chelsea
+2025-11-04 14:57:33,344 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,346 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:57:33,349 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:57:33,357 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,358 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Nott'ham Forest, away=Manchester Utd
+2025-11-04 14:57:33,366 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,369 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:57:33,371 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:57:33,378 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,379 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Fulham, away=Wolves
+2025-11-04 14:57:33,388 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,390 - __main__ - INFO - 🔍 Rows with matching home team: 2
+2025-11-04 14:57:33,393 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:57:33,399 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,400 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Crystal Palace, away=Brentford
+2025-11-04 14:57:33,407 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,409 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:57:33,411 - __main__ - INFO - 🔍 Rows with matching opponent: 3
+2025-11-04 14:57:33,419 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,420 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Burnley, away=Arsenal
+2025-11-04 14:57:33,426 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,429 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:57:33,432 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:57:33,437 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,439 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Brighton, away=Leeds United
+2025-11-04 14:57:33,446 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:57:33,449 - __main__ - INFO - 🔍 Rows with matching home team: 3
+2025-11-04 14:57:33,451 - __main__ - INFO - 🔍 Rows with matching opponent: 2
+2025-11-04 14:57:33,458 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:57:33,459 - __main__ - INFO - ✅ Matched 0/10 predictions with results
+2025-11-04 14:57:33,460 - __main__ - INFO - 
+================================================================================
+2025-11-04 14:57:33,460 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 14:57:33,461 - __main__ - INFO - ================================================================================
+2025-11-04 14:57:33,488 - __main__ - INFO - 📊 Analyzing 11 matched predictions
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 235, in _encode
+    return _map_to_integer(values, uniques)
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 174, in _map_to_integer
+    return xp.asarray([table[v] for v in values], device=device(values))
+                       ~~~~~^^^
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 167, in __missing__
+    raise KeyError(key)
+KeyError: 'Away Win'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 447, in <module>
+    main()
+    ~~~~^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 443, in main
+    collector.collect_results(days_back=30)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 80, in collect_results
+    self.calculate_metrics()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 193, in calculate_metrics
+    self._calculate_match_result_metrics(df)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/var/www/html/pyethone/scripts/bet2/python_api/collect_results.py", line 240, in _calculate_match_result_metrics
+    y_pred = le.transform(valid['prediction_1x2'])
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/preprocessing/_label.py", line 134, in transform
+    return _encode(y, uniques=self.classes_)
+  File "/var/www/html/pyethone/pye_venv/lib/python3.13/site-packages/sklearn/utils/_encode.py", line 237, in _encode
+    raise ValueError(f"y contains previously unseen labels: {e}")
+ValueError: y contains previously unseen labels: 'Away Win'
+
+========================================
+Results Collection Finished: Tue Nov  4 14:57:34 EET 2025
+Exit Code: 0
+========================================

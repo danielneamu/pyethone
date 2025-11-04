@@ -1,0 +1,30 @@
+========================================
+Results Collection Started: Tue Nov  4 14:23:22 EET 2025
+========================================
+
+2025-11-04 14:23:32,166 - __main__ - INFO - ================================================================================
+2025-11-04 14:23:32,167 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 14:23:32,168 - __main__ - INFO - ================================================================================
+2025-11-04 14:23:32,183 - __main__ - INFO - 📊 Found 20 unmatched predictions
+2025-11-04 14:23:32,186 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 14:23:32,186 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 14:23:32,242 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 14:23:32,265 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 14:23:32,296 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 14:23:32,395 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 14:23:32,413 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 14:23:32,435 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 14:23:32,528 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 14:23:32,546 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 14:23:32,616 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 14:23:32,877 - __main__ - INFO - ✅ Matched 0/20 predictions with results
+2025-11-04 14:23:32,878 - __main__ - INFO - 
+================================================================================
+2025-11-04 14:23:32,878 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 14:23:32,878 - __main__ - INFO - ================================================================================
+2025-11-04 14:23:32,884 - __main__ - WARNING - ⚠️ No matched predictions found. Cannot calculate metrics.
+
+========================================
+Results Collection Finished: Tue Nov  4 14:23:34 EET 2025
+Exit Code: 0
+========================================

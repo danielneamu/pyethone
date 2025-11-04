@@ -1,0 +1,130 @@
+========================================
+Results Collection Started: Tue Nov  4 14:53:43 EET 2025
+========================================
+
+2025-11-04 14:53:56,422 - __main__ - INFO - ================================================================================
+2025-11-04 14:53:56,423 - __main__ - INFO - RESULTS COLLECTION STARTED
+2025-11-04 14:53:56,423 - __main__ - INFO - ================================================================================
+2025-11-04 14:53:56,446 - __main__ - INFO - 📊 Found 20 unmatched predictions
+2025-11-04 14:53:56,449 - services.data_loader - INFO - Loading 3 seasons: ['2025-2026', '2024-2025', '2023-2024']
+2025-11-04 14:53:56,450 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2025-2026_all_teams.csv
+2025-11-04 14:53:56,504 - services.data_loader - INFO - Loaded 180 rows from 2025-2026
+2025-11-04 14:53:56,528 - services.data_loader - INFO - Validation passed for 2025-2026
+2025-11-04 14:53:56,562 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2024-2025_all_teams.csv
+2025-11-04 14:53:56,780 - services.data_loader - INFO - Loaded 760 rows from 2024-2025
+2025-11-04 14:53:56,799 - services.data_loader - INFO - Validation passed for 2024-2025
+2025-11-04 14:53:56,824 - services.data_loader - INFO - Loading data from /var/www/html/pyethone/scripts/bet2/data/premier_league/2023-2024_all_teams.csv
+2025-11-04 14:53:56,926 - services.data_loader - INFO - Loaded 760 rows from 2023-2024
+2025-11-04 14:53:56,936 - services.data_loader - INFO - Validation passed for 2023-2024
+2025-11-04 14:53:56,977 - services.data_loader - INFO - Combined dataset: 1700 rows across 3 seasons
+2025-11-04 14:53:56,983 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Sunderland, away=Everton
+2025-11-04 14:53:56,990 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:56,993 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:56,996 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,002 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,004 - __main__ - INFO - 🔍 Looking for: date=2025-11-04, home=Manchester City, away=Bournemouth
+2025-11-04 14:53:57,012 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,015 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,017 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,028 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,032 - __main__ - INFO - 🔍 Looking for: date=2025-11-02, home=West Ham, away=Newcastle Utd
+2025-11-04 14:53:57,051 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,055 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,060 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,071 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,074 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Liverpool, away=Aston Villa
+2025-11-04 14:53:57,087 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,091 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,095 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,108 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,111 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Tottenham, away=Chelsea
+2025-11-04 14:53:57,126 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,135 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,139 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,152 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,156 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Nott'ham Forest, away=Manchester Utd
+2025-11-04 14:53:57,171 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,175 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,180 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,191 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,194 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Fulham, away=Wolves
+2025-11-04 14:53:57,209 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,213 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,217 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,229 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,232 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Crystal Palace, away=Brentford
+2025-11-04 14:53:57,252 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,256 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,260 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,273 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,276 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Burnley, away=Arsenal
+2025-11-04 14:53:57,290 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,296 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,302 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,327 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,331 - __main__ - INFO - 🔍 Looking for: date=2025-11-01, home=Brighton, away=Leeds United
+2025-11-04 14:53:57,352 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,358 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,368 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,385 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,397 - __main__ - INFO - 🔍 Looking for: date=2025-10-24, home=Leeds United, away=West Ham
+2025-11-04 14:53:57,420 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,424 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,429 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,455 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,457 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Chelsea, away=Sunderland
+2025-11-04 14:53:57,473 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,479 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,485 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,497 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,500 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Newcastle Utd, away=Fulham
+2025-11-04 14:53:57,525 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,531 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,537 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,552 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,556 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Manchester Utd, away=Brighton
+2025-11-04 14:53:57,573 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,579 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,585 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,603 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,606 - __main__ - INFO - 🔍 Looking for: date=2025-10-25, home=Brentford, away=Liverpool
+2025-11-04 14:53:57,629 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,634 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,640 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,650 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,653 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Arsenal, away=Crystal Palace
+2025-11-04 14:53:57,667 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,671 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,676 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,686 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,689 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Aston Villa, away=Manchester City
+2025-11-04 14:53:57,703 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,707 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,711 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,723 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,725 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Bournemouth, away=Nott'ham Forest
+2025-11-04 14:53:57,739 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,744 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,748 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,759 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,762 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Everton, away=Tottenham
+2025-11-04 14:53:57,775 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,779 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,795 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,845 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,909 - __main__ - INFO - 🔍 Looking for: date=2025-10-26, home=Wolves, away=Burnley
+2025-11-04 14:53:57,925 - __main__ - INFO - 🔍 Rows with matching date: 0
+2025-11-04 14:53:57,930 - __main__ - INFO - 🔍 Rows with matching home team: 0
+2025-11-04 14:53:57,934 - __main__ - INFO - 🔍 Rows with matching opponent: 0
+2025-11-04 14:53:57,948 - __main__ - WARNING - ❌ No match found
+2025-11-04 14:53:57,949 - __main__ - INFO - ✅ Matched 0/20 predictions with results
+2025-11-04 14:53:57,950 - __main__ - INFO - 
+================================================================================
+2025-11-04 14:53:57,950 - __main__ - INFO - CALCULATING ACCURACY METRICS
+2025-11-04 14:53:57,951 - __main__ - INFO - ================================================================================
+2025-11-04 14:53:57,960 - __main__ - WARNING - ⚠️ No matched predictions found. Cannot calculate metrics.
+
+========================================
+Results Collection Finished: Tue Nov  4 14:53:59 EET 2025
+Exit Code: 0
+========================================
