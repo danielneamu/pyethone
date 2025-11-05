@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 """
 Incremental Data Updater for Premier League
 Scrapes only NEW matches from FBRef and appends to existing CSV
 Run this every 2 days to keep predictions up-to-date
 """
+from http_client import make_request_with_retry
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -53,7 +57,7 @@ TEAMS_2025_2026 = {
 # Rate limiting configuration
 REQUEST_DELAY = 8
 TEAM_DELAY = 15
-MAX_RETRIES = 3
+MAX_RETRIES = 5
 
 # User agents for rotation
 USER_AGENTS = [
@@ -96,26 +100,6 @@ def get_existing_matchweeks(existing_df, team_code):
         return set()
     return set(team_data['round'].dropna().unique())
 
-
-def make_request_with_retry(url, max_retries=MAX_RETRIES):
-    """Make HTTP request with exponential backoff retry"""
-    for attempt in range(max_retries):
-        try:
-            headers = get_random_headers()
-            response = requests.get(url, headers=headers, timeout=30)
-            response.raise_for_status()
-            return response
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 429:
-                wait_time = (attempt + 1) * 60
-                print(f"    ⚠️  Rate limited. Waiting {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                raise
-        except requests.exceptions.RequestException as e:
-            print(f"    ⚠️  Request error: {e}. Retrying...")
-            time.sleep(10)
-    raise Exception(f"Failed after {max_retries} retries")
 
 
 def scrape_schedule(team_code, existing_matchweeks):
