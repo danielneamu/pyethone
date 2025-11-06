@@ -16,21 +16,32 @@ import logging
 from pathlib import Path
 from config import MODEL_PARAMS
 
+from datetime import datetime
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Ensure logs directory exists
+log_dir = Path(__file__).parent / "logs"
+log_dir.mkdir(parents=True, exist_ok=True)
+log_file = log_dir / "train.log"
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file, mode='a'),  # Append mode
+        # Optional: still prints to console
+        logging.StreamHandler(sys.stdout)
+    ]
 )
 logger = logging.getLogger(__name__)
 
 
 def main():
-    logger.info("=" * 80)
-    logger.info("CARDS PREDICTION MODELS TRAINING")
-    logger.info("=" * 80)
+    logger.info("\n" + "="*100)
+    logger.info(f"🚀 STARTING {__file__} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info("="*100 + "\n")
 
     # Load data
     logger.info("\n[1/4] Loading data...")

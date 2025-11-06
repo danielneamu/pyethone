@@ -58,8 +58,20 @@ class ResultsCollector:
         df = df[df['date'] >= cutoff_date].copy()
         
         logger.info(f"📊 Loaded {len(df)} recent matches from CSV (after {cutoff_date})")
+        
+        # DEBUG: Show sample CSV data
+        if not df.empty:
+            logger.info(f"\n📋 Sample CSV matches (Home perspective only):")
+            home_matches = df[df['venue'] == 'Home'].head(3)
+            for _, row in home_matches.iterrows():
+                logger.info(f"  - {row['team_name']} vs {row['opponent']} on {str(row['date'])[:10]}")
 
         matched_count = 0
+
+        # DEBUG: Show what we're looking for
+        logger.info(f"\n📋 Predictions to match:")
+        for i, pred in enumerate(predictions[:3], 1):  # Show first 3
+            logger.info(f"  {i}. {pred['home_team']} vs {pred['away_team']} on {pred.get('match_date', 'NO DATE')}")
 
         for pred in predictions:
             # Try to find matching result
@@ -67,11 +79,17 @@ class ResultsCollector:
 
             if match is not None:
                 result_data = self._extract_result_data(pred, match)
+                
+                # DEBUG: Log what we're trying to save
+                logger.debug(f"  Saving result: {result_data}")
+                
                 success = self.db.save_actual_result(result_data)
 
                 if success:
                     matched_count += 1
                     logger.info(f"✅ Matched: {pred['home_team']} vs {pred['away_team']}")
+                else:
+                    logger.error(f"❌ Failed to save: {pred['home_team']} vs {pred['away_team']}")
             else:
                 logger.warning(f"⚠️  No match found for {pred['home_team']} vs {pred['away_team']} on {pred.get('match_date', 'unknown date')}")
 
@@ -85,14 +103,22 @@ class ResultsCollector:
         Find matching result in dataframe
         
         FIXED: Properly handles home/away perspective matching
+        Uses prediction['match_date'] for matching, not the date from match_id
         """
         home_team = prediction['home_team']
         away_team = prediction['away_team']
+        # Use match_date from prediction, not from match_id
         match_date = prediction.get('match_date')
 
         if not match_date:
-            logger.warning(f"  No match_date set for {home_team} vs {away_team}")
+            logger.warning(f"  No match_date in prediction for {home_team} vs {away_team}")
             return None
+        
+        # Ensure match_date is just YYYY-MM-DD format
+        if len(str(match_date)) > 10:
+            match_date = str(match_date)[:10]
+
+        logger.debug(f"  Searching for: {home_team} vs {away_team} on {match_date}")
 
         # Method 1: Find home team's perspective (team_name=home, opponent=away, venue=Home)
         match = df[
@@ -145,43 +171,71 @@ class ResultsCollector:
         """
         Extract result data from match row
         
-        FIXED: Uses correct column names from CSV
+        FIXED: Uses correct column names from CSV and handles missing values
         """
-        # From home team's perspective in CSV:
-        goals_home = int(match['goals_for'])  # Home team scored
-        goals_away = int(match['goals_against'])  # Away team scored
-        total_goals = goals_home + goals_away
+        try:
+            # From home team's perspective in CSV:
+            # goals_for = home team's goals, goals_against = away team's goals
+            goals_home = int(match['goals_for']) if pd.notna(match['goals_for']) else 0
+            goals_away = int(match['goals_against']) if pd.notna(match['goals_against']) else 0
+            total_goals = goals_home + goals_away
 
-        # Determine result (from match perspective, not team perspective)
-        result = match['result']  # W/D/L from home team's view
-        if result == 'W':
-            actual_result = 'Home Win'
-        elif result == 'D':
-            actual_result = 'Draw'
-        else:  # L
-            actual_result = 'Away Win'
+            # Determine result (from match perspective, not team perspective)
+            result = match['result']  # W/D/L from home team's view
+            if result == 'W':
+                actual_result = 'Home Win'
+            elif result == 'D':
+                actual_result = 'Draw'
+            else:  # L
+                actual_result = 'Away Win'
 
-        # BTTS
-        btts_actual = 1 if (goals_home > 0 and goals_away > 0) else 0
+            # BTTS
+            btts_actual = 1 if (goals_home > 0 and goals_away > 0) else 0
 
-        # Cards (if available)
-        cards_home = int(match.get('cards_yellow', 0)) + int(match.get('cards_red', 0))
-        cards_away = int(match.get('cards_yellow_against', 0)) + int(match.get('cards_red_against', 0))
-        total_cards = cards_home + cards_away
+            # Cards (if available) - handle missing values
+            cards_yellow_home = int(match.get('cards_yellow', 0)) if pd.notna(match.get('cards_yellow')) else 0
+            cards_red_home = int(match.get('cards_red', 0)) if pd.notna(match.get('cards_red')) else 0
+            cards_yellow_away = int(match.get('cards_yellow_against', 0)) if pd.notna(match.get('cards_yellow_against')) else 0
+            cards_red_away = int(match.get('cards_red_against', 0)) if pd.notna(match.get('cards_red_against')) else 0
+            
+            cards_home = cards_yellow_home + cards_red_home
+            cards_away = cards_yellow_away + cards_red_away
+            total_cards = cards_home + cards_away
 
-        # Generate match_id consistent with database
-        match_id = f"{prediction['home_team']}_{prediction['away_team']}_{match['date']}"
+            # Convert match date to string for storage
+            actual_match_date_str = str(match['date'])[:10] if pd.notna(match['date']) else None
+            
+            # Generate match_id based on MATCH DATE, not prediction date
+            # Format: Home_Away_MatchDate (this is the game identifier)
+            match_id = f"{prediction['home_team']}_{prediction['away_team']}_{actual_match_date_str}"
 
-        return {
-            'match_id': match_id,
-            'home_team': prediction['home_team'],
-            'away_team': prediction['away_team'],
-            'actual_result': actual_result,
-            'actual_goals': total_goals,
-            'actual_btts': btts_actual,
-            'actual_cards': total_cards,
-            'match_date': match['date']
-        }
+            # Return data matching the database schema EXACTLY
+            result_data = {
+                'match_id': match_id,  # Use original match_id from prediction
+                'home_team': prediction['home_team'],
+                'away_team': prediction['away_team'],
+                'actual_result': actual_result,
+                'total_goals': total_goals,
+                'btts_actual': btts_actual,
+                'total_cards': total_cards,
+                'goals_home': goals_home,
+                'goals_away': goals_away,
+                'cards_home': cards_home,
+                'cards_away': cards_away,
+                'match_date': actual_match_date_str  # Actual match date from CSV
+            }
+            
+            logger.debug(f"  Extracted result data: {result_data}")
+            return result_data
+            
+        except KeyError as e:
+            logger.error(f"❌ Missing column in CSV: {e}")
+            logger.error(f"   Available columns: {match.index.tolist()}")
+            raise
+        except Exception as e:
+            logger.error(f"❌ Error extracting result data: {e}")
+            logger.error(f"   Match data: {match.to_dict()}")
+            raise
 
     def calculate_metrics(self):
         """Calculate accuracy metrics from predictions + results"""
@@ -199,13 +253,10 @@ class ResultsCollector:
         df = pd.DataFrame(data)
         logger.info(f"📊 Analyzing {len(df)} matched predictions")
 
-        # Debug: Show available columns
-        logger.debug(f"📊 Available columns: {df.columns.tolist()}")
-
-        # Check data quality
-        has_goals = 'actual_goals' in df.columns and df['actual_goals'].notna().any()
-        has_btts = 'actual_btts' in df.columns and df['actual_btts'].notna().any()
-        has_cards = 'actual_cards' in df.columns and df['actual_cards'].notna().any()
+        # Check data quality - use correct column names from database
+        has_goals = 'total_goals' in df.columns and df['total_goals'].notna().any()
+        has_btts = 'btts_actual' in df.columns and df['btts_actual'].notna().any()
+        has_cards = 'total_cards' in df.columns and df['total_cards'].notna().any()
         
         logger.info(f"📊 Data available - Goals: {has_goals}, BTTS: {has_btts}, Cards: {has_cards}")
 
@@ -295,16 +346,16 @@ class ResultsCollector:
         col_prediction = f'prediction_goals_{threshold_str}'
         col_prob = f'prob_over_{threshold_str}'
 
-        if col_prediction not in df.columns or 'actual_goals' not in df.columns:
+        if col_prediction not in df.columns or 'total_goals' not in df.columns:
             return
 
-        valid = df[df[col_prediction].notna() & df['actual_goals'].notna()].copy()
+        valid = df[df[col_prediction].notna() & df['total_goals'].notna()].copy()
 
         if valid.empty:
             return
 
-        # Actual outcome
-        valid['actual_over'] = (valid['actual_goals'] > threshold).astype(int)
+        # Actual outcome - use total_goals from database
+        valid['actual_over'] = (valid['total_goals'] > threshold).astype(int)
         valid['predicted_over'] = (valid[col_prediction].str.contains('Over', na=False)).astype(int)
 
         # Accuracy
@@ -347,28 +398,28 @@ class ResultsCollector:
 
     def _calculate_btts_metrics(self, df: pd.DataFrame):
         """Calculate metrics for BTTS market"""
-        valid = df[df['prediction_btts'].notna() & df['actual_btts'].notna()].copy()
+        valid = df[df['prediction_btts'].notna() & df['btts_actual'].notna()].copy()
 
         if valid.empty:
             return
 
-        # Actual outcome
+        # Actual outcome - use btts_actual from database
         valid['predicted_btts_binary'] = (valid['prediction_btts'] == 'Yes').astype(int)
 
         # Accuracy
-        correct = (valid['predicted_btts_binary'] == valid['actual_btts']).sum()
+        correct = (valid['predicted_btts_binary'] == valid['btts_actual']).sum()
         accuracy = (correct / len(valid)) * 100
 
         # Brier Score (PRIMARY)
         try:
-            brier = brier_score_loss(valid['actual_btts'], valid['prob_btts_yes'].fillna(0.5))
+            brier = brier_score_loss(valid['btts_actual'], valid['prob_btts_yes'].fillna(0.5))
         except:
             brier = None
 
         # ROC-AUC (SECONDARY)
         try:
-            if len(valid['actual_btts'].unique()) > 1:
-                roc_auc = roc_auc_score(valid['actual_btts'], valid['prob_btts_yes'].fillna(0.5))
+            if len(valid['btts_actual'].unique()) > 1:
+                roc_auc = roc_auc_score(valid['btts_actual'], valid['prob_btts_yes'].fillna(0.5))
             else:
                 roc_auc = None
         except:
@@ -399,16 +450,16 @@ class ResultsCollector:
         col_prediction = f'prediction_cards_{threshold_str}'
         col_prob = f'prob_cards_over_{threshold_str}'
 
-        if col_prediction not in df.columns or 'actual_cards' not in df.columns:
+        if col_prediction not in df.columns or 'total_cards' not in df.columns:
             return
 
-        valid = df[df[col_prediction].notna() & df['actual_cards'].notna()].copy()
+        valid = df[df[col_prediction].notna() & df['total_cards'].notna()].copy()
 
         if valid.empty:
             return
 
-        # Actual outcome
-        valid['actual_over'] = (valid['actual_cards'] > threshold).astype(int)
+        # Actual outcome - use total_cards from database
+        valid['actual_over'] = (valid['total_cards'] > threshold).astype(int)
         valid['predicted_over'] = (valid[col_prediction].str.contains('Over', na=False)).astype(int)
 
         # Accuracy

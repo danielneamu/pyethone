@@ -32,8 +32,8 @@ class DatabaseService:
                 f"Database not found at {self.db_path}. Run init_db.py first!")
 
     def _get_connection(self) -> sqlite3.Connection:
-        """Get database connection with row factory and timeout"""
-        conn = sqlite3.connect(self.db_path, timeout=30.0)  # 30 second timeout
+        """Get database connection with row factory"""
+        conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         return conn
 
@@ -43,14 +43,7 @@ class DatabaseService:
             conn = self._get_connection()
             cursor = conn.cursor()
 
-            # match_id = game identifier (home_away_matchdate)
-            match_date = prediction_data.get('match_date', datetime.now().strftime('%Y-%m-%d'))
-            match_id = f"{prediction_data['home_team']}_{prediction_data['away_team']}_{match_date}"
-            
-            # prediction_id = unique prediction identifier (includes prediction timestamp)
-            prediction_timestamp = datetime.now().strftime('%Y-%m-%d_%H%M%S')
-            prediction_id = f"{match_id}_{prediction_data.get('model_type', 'ensemble')}_{prediction_timestamp}"
-            
+            match_id = f"{prediction_data['home_team']}_{prediction_data['away_team']}_{prediction_data.get('match_date', datetime.now().strftime('%Y-%m-%d'))}"
             preds = prediction_data.get('predictions', {})
 
             cursor.execute("""
@@ -160,59 +153,12 @@ class DatabaseService:
         return results
 
     def save_actual_result(self, result_data: Dict) -> bool:
-        """
-        Save actual match result to both actual_results and predictions tables
-        FIXED: Now calculates correct_* flags for all markets
-        """
+        """Save actual match result to both actual_results and predictions tables"""
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
 
             match_id = result_data['match_id']
-
-            # Get the prediction to calculate correctness
-            cursor.execute("""
-                SELECT prediction_1x2, prediction_goals_05, prediction_goals_15, 
-                       prediction_goals_25, prediction_goals_35, prediction_btts,
-                       prediction_cards_25, prediction_cards_35, prediction_cards_45
-                FROM predictions 
-                WHERE match_id = ?
-            """, (match_id,))
-            
-            prediction = cursor.fetchone()
-            if not prediction:
-                logger.warning(f"  ⚠️  No prediction found with match_id: {match_id}")
-                conn.close()
-                return False
-
-            logger.info(f"  Found existing prediction: {dict(prediction)}")
-            
-            # Calculate correctness flags
-            correct_1x2 = 1 if dict(prediction)['prediction_1x2'] == result_data['actual_result'] else 0
-            
-            # Goals correctness
-            total_goals = result_data['total_goals']
-            correct_goals_05 = 1 if (total_goals > 0.5 and 'Over' in str(dict(prediction)['prediction_goals_05'])) or \
-                                     (total_goals <= 0.5 and 'Under' in str(dict(prediction)['prediction_goals_05'])) else 0
-            correct_goals_15 = 1 if (total_goals > 1.5 and 'Over' in str(dict(prediction)['prediction_goals_15'])) or \
-                                     (total_goals <= 1.5 and 'Under' in str(dict(prediction)['prediction_goals_15'])) else 0
-            correct_goals_25 = 1 if (total_goals > 2.5 and 'Over' in str(dict(prediction)['prediction_goals_25'])) or \
-                                     (total_goals <= 2.5 and 'Under' in str(dict(prediction)['prediction_goals_25'])) else 0
-            correct_goals_35 = 1 if (total_goals > 3.5 and 'Over' in str(dict(prediction)['prediction_goals_35'])) or \
-                                     (total_goals <= 3.5 and 'Under' in str(dict(prediction)['prediction_goals_35'])) else 0
-            
-            # BTTS correctness
-            correct_btts = 1 if (result_data['btts_actual'] == 1 and 'Yes' in str(dict(prediction)['prediction_btts'])) or \
-                                (result_data['btts_actual'] == 0 and 'No' in str(dict(prediction)['prediction_btts'])) else 0
-            
-            # Cards correctness
-            total_cards = result_data.get('total_cards', 0)
-            correct_cards_25 = 1 if (total_cards > 2.5 and 'Over' in str(dict(prediction)['prediction_cards_25'])) or \
-                                     (total_cards <= 2.5 and 'Under' in str(dict(prediction)['prediction_cards_25'])) else 0
-            correct_cards_35 = 1 if (total_cards > 3.5 and 'Over' in str(dict(prediction)['prediction_cards_35'])) or \
-                                     (total_cards <= 3.5 and 'Under' in str(dict(prediction)['prediction_cards_35'])) else 0
-            correct_cards_45 = 1 if (total_cards > 4.5 and 'Over' in str(dict(prediction)['prediction_cards_45'])) or \
-                                     (total_cards <= 4.5 and 'Under' in str(dict(prediction)['prediction_cards_45'])) else 0
 
             # Insert into actual_results table (for archive)
             cursor.execute("""
@@ -236,61 +182,42 @@ class DatabaseService:
                 result_data.get('total_cards', 0),
                 result_data['match_date']
             ))
-            logger.debug(f"  ✓ Inserted into actual_results")
 
-            # Update predictions table with results AND correctness flags
+            # Update predictions table with actual results
             cursor.execute("""
                 UPDATE predictions 
                 SET 
                     actual_result = ?,
+                    goals_home = ?,
+                    goals_away = ?,
                     total_goals = ?,
                     btts_actual = ?,
+                    cards_home = ?,
+                    cards_away = ?,
                     total_cards = ?,
-                    correct_1x2 = ?,
-                    correct_goals_05 = ?,
-                    correct_goals_15 = ?,
-                    correct_goals_25 = ?,
-                    correct_goals_35 = ?,
-                    correct_btts = ?,
-                    correct_cards_25 = ?,
-                    correct_cards_35 = ?,
-                    correct_cards_45 = ?,
                     is_matched = 1,
                     matched_date = CURRENT_TIMESTAMP
                 WHERE match_id = ?
             """, (
                 result_data['actual_result'],
+                result_data['goals_home'],
+                result_data['goals_away'],
                 result_data['total_goals'],
                 result_data['btts_actual'],
+                result_data.get('cards_home', 0),
+                result_data.get('cards_away', 0),
                 result_data.get('total_cards', 0),
-                correct_1x2,
-                correct_goals_05,
-                correct_goals_15,
-                correct_goals_25,
-                correct_goals_35,
-                correct_btts,
-                correct_cards_25,
-                correct_cards_35,
-                correct_cards_45,
                 match_id
             ))
-            
-            rows_updated = cursor.rowcount
-            logger.info(f"  ✓ Updated {rows_updated} row(s) with correctness flags")
-
-            if rows_updated == 0:
-                logger.warning(f"  ⚠️  UPDATE affected 0 rows for match_id: {match_id}")
 
             conn.commit()
             conn.close()
 
-            logger.info(f"✅ Saved result: {match_id} (1X2: {'✓' if correct_1x2 else '✗'})")
+            logger.info(f"✅ Saved result: {match_id}")
             return True
 
         except Exception as e:
             logger.error(f"❌ Error saving result: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
             return False
 
     def get_predictions_with_results(self, limit: int = 100) -> List[Dict]:
