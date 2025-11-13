@@ -45,7 +45,7 @@ git add .
 git commit -m "Update pyethone"
 git push origin master
 
-# Push only pyethone/ to repo B
+# Push only pyethone/ to repo B (this command is ran in the parent repository)
 git subtree push --prefix=pyethone pyethone master
 
 
